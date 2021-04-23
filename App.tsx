@@ -76,7 +76,10 @@ export default function App() {
 
   useEffect(() => {
     Speech.stop()
-    if (!reading) return
+    if (!reading) {
+      setLightsOff(false)
+      return
+    }
 
     const speak = (text: string) =>
       new Promise<'done' | 'stopped'>((resolve, reject) =>
@@ -99,7 +102,7 @@ export default function App() {
       const status = await retryPromise(2, () => speak(chunks[chunkIndex]))
       if (!cancel && status === 'done') {
         if (chunkIndex + 1 >= chunks.length) {
-          if (chunks.length > 1) return speak(chunkStats(value, chunks))
+          if (chunks.length > 1) await speak(chunkStats(value, chunks))
           setReading(false)
           return
         }
