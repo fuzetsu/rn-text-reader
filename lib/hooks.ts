@@ -14,7 +14,7 @@ export const useKeepAwake = (keepAwake: boolean) => {
 export const useDoublePress = <T extends () => void>(fn: T) => {
   const lastPress = useRef(0)
   return useCallback(() => {
-    if (Date.now() - lastPress.current < 200) fn()
+    if (Date.now() - lastPress.current < 500) fn()
     lastPress.current = Date.now()
   }, [])
 }
