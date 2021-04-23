@@ -5,13 +5,15 @@ import { Button } from './Button'
 
 interface Props {
   value: string | number
-  min: string | number
-  max: string | number
   step: string
   onChange(newValue: string): void
+  min?: string | number
+  max?: string | number
   placeholder?: string
   noField?: boolean
   style?: StyleProp<any>
+  minusText?: string
+  plusText?: string
 }
 
 export const NumberUpDown = ({
@@ -23,6 +25,8 @@ export const NumberUpDown = ({
   min,
   max,
   placeholder,
+  minusText = '-',
+  plusText = '+',
 }: Props) => {
   const format = (x: number) =>
     x.toFixed(step.includes('.') ? step.slice(step.indexOf('.') + 1).length : 0)
@@ -38,22 +42,21 @@ export const NumberUpDown = ({
   return (
     <View style={[styles.container, style]}>
       <Button
-        text="-"
+        text={minusText}
         textStyle={styles.buttonText}
         disabled={!isNaN(numMin) && numValue <= numMin}
         style={[{ marginLeft: 0, marginRight: buttonMargin, paddingHorizontal: 20 }, noFieldStyle]}
         onPress={() => onChange(format(numValue - numStep))}
       />
-      <View style={noField ? { display: 'none' } : { flex: 1 }}>
-        <TextInput
-          keyboardType="number-pad"
-          value={String(value)}
-          onChangeText={onChange}
-          placeholder={placeholder}
-        />
-      </View>
+      <TextInput
+        keyboardType="number-pad"
+        style={noField ? { display: 'none' } : { flex: 1 }}
+        value={String(value)}
+        onChangeText={onChange}
+        placeholder={placeholder}
+      />
       <Button
-        text="+"
+        text={plusText}
         disabled={!isNaN(numMax) && numValue >= numMax}
         textStyle={styles.buttonText}
         style={[{ marginRight: 0, marginLeft: buttonMargin, paddingHorizontal: 20 }, noFieldStyle]}
