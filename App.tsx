@@ -132,6 +132,7 @@ export default function App() {
 
   return (
     <ScrollView style={styles.container}>
+      <StatusBar />
       {!reading && (
         <>
           <Label text="Read" />
@@ -222,7 +223,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    marginTop: StatusBar.currentHeight,
     marginBottom: 10,
     padding: 10,
   },
