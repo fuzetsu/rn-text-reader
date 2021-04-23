@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactNode } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { truthy } from '../util'
+import { truthy } from '../lib/util'
 
 type Props = PropsWithChildren<{}>
 

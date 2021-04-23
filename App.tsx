@@ -1,12 +1,20 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import { StyleSheet, Text, StatusBar, ScrollView } from 'react-native'
+import { StyleSheet, Text, StatusBar, ScrollView, TouchableOpacity } from 'react-native'
 import * as Speech from 'expo-speech'
 import merge, { MultipleTopLevelPatch } from 'mergerino'
 import Clipboard from 'expo-clipboard'
 
 import { initialState, State } from './state'
-import { getVoices, retryPromise, getSavedState, saveState, chunkText, chunkStats } from './util'
+import {
+  getVoices,
+  retryPromise,
+  getSavedState,
+  saveState,
+  chunkText,
+  chunkStats,
+} from './lib/util'
 import { Label, Picker, TextInput, ButtonGroup, NumberUpDown, Button } from './base'
+import { useDoublePress, useKeepAwake } from './lib/hooks'
 
 export default function App() {
   const [state, setState] = useReducer(
@@ -21,6 +29,9 @@ export default function App() {
   const [languages, setLanguages] = useState<string[]>([])
   const [reading, setReading] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [lightsOff, setLightsOff] = useState(false)
+
+  useKeepAwake(lightsOff)
 
   useEffect(() => {
     if (!loaded) return
@@ -101,6 +112,17 @@ export default function App() {
     return () => (cancel = true)
   }, [reading, chunkIndex, voice, pitch, rate, chunks])
 
+  const lightsOn = useDoublePress(() => setLightsOff(false))
+
+  if (lightsOff) {
+    return (
+      <>
+        <StatusBar hidden />
+        <TouchableOpacity style={styles.lightsOff} onPress={lightsOn} />
+      </>
+    )
+  }
+
   const loadingPicker = <Picker.Item value="" label="Loading..." />
 
   const readBtnLabel =
@@ -125,7 +147,11 @@ export default function App() {
       )}
       <ButtonGroup>
         <Button text={readBtnLabel} onPress={() => setReading(!reading)} />
-        {!reading && <Button text="Paste" onPress={paste} />}
+        {reading ? (
+          <Button text="Lights off" onPress={() => setLightsOff(true)} />
+        ) : (
+          <Button text="Paste" onPress={paste} />
+        )}
       </ButtonGroup>
       <Label text="Language" />
       <Picker selectedValue={language} onValueChange={(x: string) => setState({ language: x })}>
@@ -180,6 +206,8 @@ export default function App() {
             min="0"
             max={chunks.length - 1}
             onChange={(x) => setState({ chunkIndex: Number(x) })}
+            minusText="<"
+            plusText=">"
           />
           <Text style={{ marginTop: 5 }}>{chunks[chunkIndex]?.trim()}</Text>
         </>
@@ -189,6 +217,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  lightsOff: {
+    backgroundColor: 'black',
+    flex: 1,
+  },
   container: {
     marginTop: StatusBar.currentHeight,
     marginBottom: 10,

@@ -1,6 +1,6 @@
 import * as Speech from 'expo-speech'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { initialState } from './state'
+import { initialState } from '../state'
 
 export const truthy = <T>(value: T): value is T => Boolean(value)
 
@@ -10,7 +10,7 @@ export const sortBy = <T extends { [key: string]: string }>(key: keyof T) => (a:
 export const getSavedState = async () => {
   try {
     const json = await AsyncStorage.getItem('@our-state')
-    return !json?.trim() ? initialState : JSON.parse(json)
+    return json?.trim() ? JSON.parse(json) : initialState
   } catch (e) {
     return initialState
   }
@@ -86,5 +86,7 @@ export const chunkStats = (value: string, chunks: string[]) => {
     `Finished reading ${wordCount} words`,
     `${averageCharPerChunk} characters per chunk on average`,
     `Thanks for listening friendo`,
-  ].join('')
+  ].join('. ')
 }
+
+export const genId = () => Math.random().toString(36).slice(2)
