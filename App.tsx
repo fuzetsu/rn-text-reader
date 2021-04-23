@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { StyleSheet, Text, StatusBar, ScrollView, TouchableOpacity } from 'react-native'
 import * as Speech from 'expo-speech'
+import * as DocumentPicker from 'expo-document-picker'
+import { readAsStringAsync } from 'expo-file-system'
 import merge, { MultipleTopLevelPatch } from 'mergerino'
 import Clipboard from 'expo-clipboard'
 
@@ -133,6 +135,11 @@ export default function App() {
 
   const paste = () => Clipboard.getStringAsync().then((x) => setState({ value: x, chunkIndex: 0 }))
 
+  const loadFile = async () => {
+    const res = await DocumentPicker.getDocumentAsync({ type: 'text/*' })
+    if (res.type === 'success') setState({ value: await readAsStringAsync(res.uri) })
+  }
+
   return (
     <ScrollView style={styles.container}>
       <StatusBar />
@@ -150,13 +157,16 @@ export default function App() {
         </>
       )}
       <ButtonGroup>
-        <Button text={readBtnLabel} onPress={() => setReading(!reading)} />
-        {reading ? (
-          <Button text="Lights off" onPress={() => setLightsOff(true)} />
-        ) : (
-          <Button text="Paste" onPress={paste} />
-        )}
+        {chunks.length > 0 && <Button text={readBtnLabel} onPress={() => setReading(!reading)} />}
+        {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
+        {!reading && value && <Button text="Clear" onPress={() => setState({ value: '' })} />}
       </ButtonGroup>
+      {!reading && (
+        <ButtonGroup>
+          <Button text="Load file" onPress={loadFile} />
+          <Button text="Paste" onPress={paste} />
+        </ButtonGroup>
+      )}
       <Label text="Language" />
       <Picker selectedValue={language} onValueChange={(x: string) => setState({ language: x })}>
         {languages.length > 0
