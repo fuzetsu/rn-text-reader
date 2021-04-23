@@ -133,11 +133,13 @@ export default function App() {
   const readBtnLabel =
     (reading ? 'Stop' : 'Read') + (chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : '')
 
-  const paste = () => Clipboard.getStringAsync().then((x) => setState({ value: x, chunkIndex: 0 }))
+  const changeValue = (value: string) => setState({ value, chunkIndex: 0 })
+
+  const paste = () => Clipboard.getStringAsync().then(changeValue)
 
   const loadFile = async () => {
     const res = await DocumentPicker.getDocumentAsync({ type: 'text/*' })
-    if (res.type === 'success') setState({ value: await readAsStringAsync(res.uri) })
+    if (res.type === 'success') changeValue(await readAsStringAsync(res.uri))
   }
 
   return (
@@ -152,14 +154,14 @@ export default function App() {
             placeholder="text to read"
             autoCorrect={false}
             value={value}
-            onChangeText={(x) => setState({ value: x })}
+            onChangeText={changeValue}
           />
         </>
       )}
       <ButtonGroup>
         {chunks.length > 0 && <Button text={readBtnLabel} onPress={() => setReading(!reading)} />}
         {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
-        {!reading && value && <Button text="Clear" onPress={() => setState({ value: '' })} />}
+        {!reading && value && <Button text="Clear" onPress={() => changeValue('')} />}
       </ButtonGroup>
       {!reading && (
         <ButtonGroup>
