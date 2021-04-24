@@ -1,24 +1,23 @@
 import * as Speech from 'expo-speech'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { initialState } from '../state'
 
 export const truthy = <T>(value: T): value is T => Boolean(value)
 
 export const sortBy = <T extends { [key: string]: string }>(key: keyof T) => (a: T, b: T) =>
   a[key].localeCompare(b[key])
 
-export const getSavedState = async () => {
+export const getSavedState = async (key: string, fallback?: any) => {
   try {
-    const json = await AsyncStorage.getItem('@our-state')
-    return json?.trim() ? JSON.parse(json) : initialState
+    const json = await AsyncStorage.getItem(key)
+    return json?.trim() ? JSON.parse(json) : fallback
   } catch (e) {
-    return initialState
+    return fallback
   }
 }
 
-export const saveState = async (state: any) => {
+export const saveState = async (key: string, state: any) => {
   try {
-    await AsyncStorage.setItem('@our-state', JSON.stringify(state))
+    await AsyncStorage.setItem(key, JSON.stringify(state))
     return true
   } catch (e) {
     return false
@@ -27,21 +26,18 @@ export const saveState = async (state: any) => {
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export const retryPromise = async <T extends (...args: any[]) => any>(
+export const retryPromise = <T extends (...args: any[]) => Promise<any>>(
   times: number,
   promiseFn: T
-): Promise<ReturnType<T>> => {
-  try {
-    return await promiseFn()
-  } catch (e) {
-    console.log('promised failed, retry', times)
+): ReturnType<T> => {
+  return promiseFn().catch(async (error) => {
+    console.log('promised failed, retry', times, error)
     if (times > 0) {
       await sleep(200)
       return await retryPromise(times - 1, promiseFn)
-    } else {
-      throw e
     }
-  }
+    throw error
+  }) as ReturnType<T>
 }
 
 export const getVoices = async () => {
@@ -90,3 +86,11 @@ export const chunkStats = (value: string, chunks: string[]) => {
 }
 
 export const genId = () => Math.random().toString(36).slice(2)
+
+export const debounce = <T extends (...args: any) => void>(ms: number, fn: T) => {
+  let id = 0
+  return (...args: Parameters<T>) => {
+    window.clearTimeout(id)
+    id = window.setTimeout(() => fn(...(args as any)), ms)
+  }
+}

@@ -1,81 +1,43 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, StatusBar, ScrollView, TouchableOpacity, View } from 'react-native'
 import * as Speech from 'expo-speech'
 import * as DocumentPicker from 'expo-document-picker'
 import { readAsStringAsync } from 'expo-file-system'
-import merge, { MultipleTopLevelPatch } from 'mergerino'
 import Clipboard from 'expo-clipboard'
 
-import { initialState, State } from './state'
 import {
-  getVoices,
-  retryPromise,
-  getSavedState,
-  saveState,
-  chunkText,
-  chunkStats,
-} from './lib/util'
+  setChunkIndex,
+  setEditText,
+  setLanguage,
+  setLightsOff,
+  setPitch,
+  setReading,
+  setSpeed,
+  setVoice,
+  updateValue,
+  useStore,
+} from './state'
+import { retryPromise, chunkStats } from './lib/util'
 import { Label, Picker, TextInput, ButtonGroup, NumberUpDown, Button, TempState } from './base'
 import { useDoublePress, useKeepAwake } from './lib/hooks'
 
 export default function App() {
-  const [state, setState] = useReducer(
-    (state: State, patch: MultipleTopLevelPatch<State>) => merge(state, patch),
-    initialState
-  )
-  const { value, language, voice, pitch, rate, chunkIndex } = state
-
-  const [chunks, setChunks] = useState<string[]>([])
-  const [voices, setVoices] = useState<Speech.Voice[]>([])
-  const [filteredVoices, setFilteredVoices] = useState<Speech.Voice[]>([])
-  const [languages, setLanguages] = useState<string[]>([])
-  const [reading, setReading] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-  const [lightsOff, setLightsOff] = useState(false)
-  const [editText, setEditText] = useState(false)
+  const {
+    value,
+    language,
+    voice,
+    pitch,
+    speed,
+    chunkIndex,
+    languages,
+    filteredVoices,
+    editText,
+    lightsOff,
+    reading,
+    chunks,
+  } = useStore()
 
   useKeepAwake(lightsOff)
-
-  useEffect(() => {
-    if (!loaded) return
-    const id = setTimeout(() => saveState(state), 500)
-    return () => clearTimeout(id)
-  }, [loaded, state])
-
-  useEffect(() => {
-    getSavedState().then((state) => {
-      setState(state)
-      setLoaded(true)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!loaded) return
-    const search = async () => {
-      const { voices, languages } = await retryPromise(3, () => getVoices())
-      setLanguages(languages)
-      if (!languages.includes(language)) setState({ language: languages[0] })
-      setVoices(voices)
-    }
-    search()
-  }, [loaded])
-
-  useEffect(() => {
-    if (!language || voices.length <= 0) return
-    const filtered = voices.filter((voice) => voice.language === language)
-    setFilteredVoices(filtered)
-    if (filtered.length > 0 && filtered.every((x) => x.identifier !== voice)) {
-      setState({ voice: filtered[0].identifier })
-    }
-  }, [language, voices])
-
-  useEffect(() => {
-    if (!loaded) return
-    const chunks = chunkText(value)
-    setReading(false)
-    setChunks(chunks)
-    setState({ chunkIndex: chunkIndex >= chunks.length ? 0 : chunkIndex })
-  }, [value, loaded])
 
   useEffect(() => {
     Speech.stop()
@@ -88,7 +50,7 @@ export default function App() {
       new Promise<'done' | 'stopped'>((resolve, reject) =>
         Speech.speak(text, {
           voice,
-          rate: Number(rate) || 1,
+          rate: Number(speed) || 1,
           pitch: Number(pitch) || 1,
           onDone: () => resolve('done'),
           onStopped: () => resolve('stopped'),
@@ -109,14 +71,14 @@ export default function App() {
           setReading(false)
           return
         }
-        setState({ chunkIndex: chunkIndex + 1 })
+        setChunkIndex(chunkIndex + 1)
       }
     }
     readChunk()
 
     let cancel = false
     return () => (cancel = true)
-  }, [reading, chunkIndex, voice, pitch, rate, chunks])
+  }, [reading, chunkIndex, voice, pitch, speed, chunks])
 
   const setLightsOnDoublePress = useDoublePress(() => setLightsOff(false))
 
@@ -129,20 +91,18 @@ export default function App() {
     )
   }
 
-  const changeValue = (value: string) => setState({ value, chunkIndex: 0 })
-
-  const paste = () => Clipboard.getStringAsync().then(changeValue)
+  const paste = () => Clipboard.getStringAsync().then(updateValue)
 
   const loadFile = async () => {
     const res = await DocumentPicker.getDocumentAsync({ type: 'text/*' })
-    if (res.type === 'success') changeValue(await readAsStringAsync(res.uri))
+    if (res.type === 'success') updateValue(await readAsStringAsync(res.uri))
   }
 
   if (editText) {
     return (
       <TempState value={value}>
         {(text, setText) => (
-          <>
+          <View style={styles.container}>
             <StatusBar />
             <Label text="Text to read" />
             <TextInput
@@ -155,15 +115,16 @@ export default function App() {
             />
             <ButtonGroup>
               <Button
+                primary
                 text="Save"
                 onPress={() => {
-                  changeValue(text)
+                  updateValue(text)
                   setEditText(false)
                 }}
               />
               <Button text="Cancel" onPress={() => setEditText(false)} />
             </ButtonGroup>
-          </>
+          </View>
         )}
       </TempState>
     )
@@ -185,12 +146,12 @@ export default function App() {
           </ButtonGroup>
           <ButtonGroup>
             <Button text="Load file" onPress={loadFile} />
-            {value && <Button text="Clear" onPress={() => changeValue('')} />}
+            {value && <Button text="Clear" onPress={() => updateValue('')} />}
           </ButtonGroup>
         </>
       )}
       <Label text="Language" />
-      <Picker selectedValue={language} onValueChange={(x) => setState({ language: x })}>
+      <Picker selectedValue={language} onValueChange={setLanguage}>
         {languages.length > 0
           ? languages.map((language) => (
               <Picker.Item key={language} label={language} value={language} />
@@ -198,7 +159,7 @@ export default function App() {
           : loadingPicker}
       </Picker>
       <Label text="Voice" />
-      <Picker selectedValue={voice} onValueChange={(x) => setState({ voice: x })}>
+      <Picker selectedValue={voice} onValueChange={setVoice}>
         {filteredVoices.length > 0
           ? filteredVoices.map((voice) => (
               <Picker.Item key={voice.identifier} label={voice.name} value={voice.identifier} />
@@ -212,22 +173,22 @@ export default function App() {
         step="0.1"
         min="0.1"
         max="100"
-        onChange={(x) => setState({ pitch: x })}
+        onChange={setPitch}
       />
       <Label text="Speed" />
       <NumberUpDown
         placeholder="voice speed (default 1.0)"
-        value={rate}
+        value={speed}
         step="0.1"
         min="0.1"
         max="100"
-        onChange={(x) => setState({ rate: x })}
+        onChange={setSpeed}
       />
       {chunks.length > 0 && (
         <>
           <Label text="Chunk" />
           {chunks.length > 1 && (
-            <Picker selectedValue={chunkIndex} onValueChange={(x) => setState({ chunkIndex: x })}>
+            <Picker selectedValue={chunkIndex} onValueChange={setChunkIndex}>
               {chunks.map((chunk, idx) => (
                 <Picker.Item key={chunk} label={`${idx + 1} - ${chunk.slice(0, 50)}`} value={idx} />
               ))}
@@ -242,18 +203,17 @@ export default function App() {
         <NumberUpDown
           noField
           value={chunkIndex}
-          style={{ marginTop: 4 }}
           step="1"
           min="0"
           max={chunks.length - 1}
-          onChange={(x) => setState({ chunkIndex: Number(x) })}
+          onChange={(x) => setChunkIndex(Number(x))}
           minusText="<"
           plusText=">"
         />
       )}
       {chunks.length > 0 && (
         <ButtonGroup>
-          <Button text={readBtnLabel} onPress={() => setReading(!reading)} />
+          <Button primary text={readBtnLabel} onPress={() => setReading(!reading)} />
           {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
         </ButtonGroup>
       )}
@@ -265,5 +225,5 @@ const styles = StyleSheet.create({
   textScroll: { flex: 1 },
   text: { marginTop: 5, fontSize: 17 },
   lightsOff: { backgroundColor: 'black', flex: 1 },
-  container: { flex: 1, marginBottom: 20, padding: 10 },
+  container: { flex: 1, marginBottom: 10, padding: 10 },
 })

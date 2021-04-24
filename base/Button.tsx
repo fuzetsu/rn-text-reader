@@ -4,19 +4,23 @@ import { TouchableOpacity, Text, StyleSheet, StyleProp, TextStyle } from 'react-
 interface Props extends ComponentProps<typeof TouchableOpacity> {
   text: string
   textStyle?: StyleProp<TextStyle>
+  primary?: boolean
 }
 
-export const Button = ({ text, style, textStyle, disabled, ...props }: Props) => (
+export const Button = ({ text, style, textStyle, disabled, primary, ...props }: Props) => (
   <TouchableOpacity
     {...props}
     disabled={disabled}
-    style={[styles.button, disabled && styles.disabled, style]}
+    style={[styles.button, disabled && styles.disabled, primary && styles.primary, style]}
   >
     <Text style={[styles.buttonText, disabled && styles.disabledText, textStyle]}>{text}</Text>
   </TouchableOpacity>
 )
 
 const styles = StyleSheet.create({
+  primary: {
+    backgroundColor: 'rgb(70, 48, 235)',
+  },
   buttonText: {
     fontSize: 16,
     color: 'white',
