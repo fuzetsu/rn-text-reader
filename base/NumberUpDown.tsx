@@ -50,7 +50,7 @@ export const NumberUpDown = ({
       {!noField && (
         <TextInput
           keyboardType="number-pad"
-          style={{ flex: 1 }}
+          style={styles.input}
           value={String(value)}
           onChangeText={onChange}
           placeholder={placeholder}
@@ -70,8 +70,10 @@ export const NumberUpDown = ({
 const styles = StyleSheet.create({
   noField: { flex: 1 },
   buttonText: { fontSize: 22 },
-  button: { paddingHorizontal: 30 },
+  button: { paddingHorizontal: 40 },
+  input: { flex: 1, textAlign: 'center' },
   container: {
+    margin: 2,
     flexDirection: 'row',
     flexWrap: 'nowrap',
     alignItems: 'center',
