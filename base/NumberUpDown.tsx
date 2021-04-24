@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, StyleProp } from 'react-native'
+import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native'
 import { TextInput } from './TextInput'
 import { Button } from './Button'
 
@@ -11,7 +11,7 @@ interface Props {
   max?: string | number
   placeholder?: string
   noField?: boolean
-  style?: StyleProp<any>
+  style?: StyleProp<ViewStyle>
   minusText?: string
   plusText?: string
 }
