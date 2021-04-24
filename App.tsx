@@ -15,7 +15,7 @@ import {
   chunkText,
   chunkStats,
 } from './lib/util'
-import { Label, Picker, TextInput, ButtonGroup, NumberUpDown, Button } from './base'
+import { Label, Picker, TextInput, ButtonGroup, NumberUpDown, Button, TempState } from './base'
 import { useDoublePress, useKeepAwake } from './lib/hooks'
 
 export default function App() {
@@ -32,6 +32,7 @@ export default function App() {
   const [reading, setReading] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [lightsOff, setLightsOff] = useState(false)
+  const [editText, setEditText] = useState(false)
 
   useKeepAwake(lightsOff)
 
@@ -117,21 +118,16 @@ export default function App() {
     return () => (cancel = true)
   }, [reading, chunkIndex, voice, pitch, rate, chunks])
 
-  const lightsOn = useDoublePress(() => setLightsOff(false))
+  const setLightsOnDoublePress = useDoublePress(() => setLightsOff(false))
 
   if (lightsOff) {
     return (
       <>
         <StatusBar hidden />
-        <TouchableOpacity style={styles.lightsOff} onPress={lightsOn} />
+        <TouchableOpacity style={styles.lightsOff} onPress={setLightsOnDoublePress} />
       </>
     )
   }
-
-  const loadingPicker = <Picker.Item value="" label="Loading..." />
-
-  const readBtnLabel =
-    (reading ? 'Stop' : 'Read') + (chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : '')
 
   const changeValue = (value: string) => setState({ value, chunkIndex: 0 })
 
@@ -142,22 +138,45 @@ export default function App() {
     if (res.type === 'success') changeValue(await readAsStringAsync(res.uri))
   }
 
+  if (editText) {
+    return (
+      <TempState value={value}>
+        {(text, setText) => (
+          <>
+            <StatusBar />
+            <Label text="Text to read" />
+            <TextInput
+              multiline
+              style={{ flex: 1 }}
+              placeholder="text to read"
+              autoCorrect={false}
+              value={text}
+              onChangeText={setText}
+            />
+            <ButtonGroup>
+              <Button
+                text="Save"
+                onPress={() => {
+                  changeValue(text)
+                  setEditText(false)
+                }}
+              />
+              <Button text="Cancel" onPress={() => setEditText(false)} />
+            </ButtonGroup>
+          </>
+        )}
+      </TempState>
+    )
+  }
+
+  const loadingPicker = <Picker.Item value="" label="Loading..." />
+
+  const readBtnLabel =
+    (reading ? 'Stop' : 'Read') + (chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : '')
+
   return (
     <ScrollView style={styles.container}>
       <StatusBar />
-      {!reading && (
-        <>
-          <Label text="Read" />
-          <TextInput
-            multiline
-            style={{ height: 100 }}
-            placeholder="text to read"
-            autoCorrect={false}
-            value={value}
-            onChangeText={changeValue}
-          />
-        </>
-      )}
       <ButtonGroup>
         {chunks.length > 0 && <Button text={readBtnLabel} onPress={() => setReading(!reading)} />}
         {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
@@ -165,8 +184,9 @@ export default function App() {
       </ButtonGroup>
       {!reading && (
         <ButtonGroup>
-          <Button text="Load file" onPress={loadFile} />
           <Button text="Paste" onPress={paste} />
+          <Button text="Edit text" onPress={() => setEditText(true)} />
+          <Button text="Load file" onPress={loadFile} />
         </ButtonGroup>
       )}
       <Label text="Language" />
@@ -203,9 +223,9 @@ export default function App() {
         max="100"
         onChange={(x) => setState({ rate: x })}
       />
+      {chunks.length > 0 && <Label text="Chunk" />}
       {chunks.length > 1 && (
         <>
-          <Label text="Chunk" />
           <Picker
             selectedValue={chunkIndex}
             onValueChange={(x) => setState({ chunkIndex: Number(x) })}
@@ -225,9 +245,9 @@ export default function App() {
             minusText="<"
             plusText=">"
           />
-          <Text style={{ marginTop: 5 }}>{chunks[chunkIndex]?.trim()}</Text>
         </>
       )}
+      <Text style={{ marginTop: 5 }}>{chunks[chunkIndex]?.trim()}</Text>
     </ScrollView>
   )
 }
@@ -238,7 +258,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    marginBottom: 10,
+    marginBottom: 20,
     padding: 10,
   },
 })

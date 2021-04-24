@@ -7,7 +7,7 @@ export const Label = ({ text }: { text: string }) => {
 
 const styles = StyleSheet.create({
   label: {
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 2,
     color: '#555',
     fontSize: 14,
