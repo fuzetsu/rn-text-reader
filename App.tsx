@@ -190,7 +190,7 @@ export default function App() {
         </ButtonGroup>
       )}
       <Label text="Language" />
-      <Picker selectedValue={language} onValueChange={(x: string) => setState({ language: x })}>
+      <Picker selectedValue={language} onValueChange={(x) => setState({ language: x })}>
         {languages.length > 0
           ? languages.map((language) => (
               <Picker.Item key={language} label={language} value={language} />
@@ -198,7 +198,7 @@ export default function App() {
           : loadingPicker}
       </Picker>
       <Label text="Voice" />
-      <Picker selectedValue={voice} onValueChange={(x: string) => setState({ voice: x })}>
+      <Picker selectedValue={voice} onValueChange={(x) => setState({ voice: x })}>
         {filteredVoices.length > 0
           ? filteredVoices.map((voice) => (
               <Picker.Item key={voice.identifier} label={voice.name} value={voice.identifier} />
@@ -226,10 +226,7 @@ export default function App() {
       {chunks.length > 0 && <Label text="Chunk" />}
       {chunks.length > 1 && (
         <>
-          <Picker
-            selectedValue={chunkIndex}
-            onValueChange={(x) => setState({ chunkIndex: Number(x) })}
-          >
+          <Picker selectedValue={chunkIndex} onValueChange={(x) => setState({ chunkIndex: x })}>
             {chunks.map((chunk, idx) => (
               <Picker.Item key={chunk} label={`${idx + 1} - ${chunk.slice(0, 50)}`} value={idx} />
             ))}
