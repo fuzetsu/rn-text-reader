@@ -31,8 +31,7 @@ export const NumberUpDown = ({
   const format = (x: number) =>
     x.toFixed(step.includes('.') ? step.slice(step.indexOf('.') + 1).length : 0)
 
-  const noFieldStyle = noField && { flex: 1 }
-  const buttonMargin = noField ? 2 : 5
+  const noFieldStyle = noField && styles.noField
 
   const numMax = Number(max)
   const numMin = Number(min)
@@ -45,21 +44,23 @@ export const NumberUpDown = ({
         text={minusText}
         textStyle={styles.buttonText}
         disabled={!isNaN(numMin) && numValue <= numMin}
-        style={[{ marginLeft: 0, marginRight: buttonMargin, paddingHorizontal: 20 }, noFieldStyle]}
+        style={[styles.button, noFieldStyle]}
         onPress={() => onChange(format(numValue - numStep))}
       />
-      <TextInput
-        keyboardType="number-pad"
-        style={noField ? { display: 'none' } : { flex: 1 }}
-        value={String(value)}
-        onChangeText={onChange}
-        placeholder={placeholder}
-      />
+      {!noField && (
+        <TextInput
+          keyboardType="number-pad"
+          style={{ flex: 1 }}
+          value={String(value)}
+          onChangeText={onChange}
+          placeholder={placeholder}
+        />
+      )}
       <Button
         text={plusText}
         disabled={!isNaN(numMax) && numValue >= numMax}
         textStyle={styles.buttonText}
-        style={[{ marginRight: 0, marginLeft: buttonMargin, paddingHorizontal: 20 }, noFieldStyle]}
+        style={[styles.button, noFieldStyle]}
         onPress={() => onChange(format(numValue + numStep))}
       />
     </View>
@@ -67,7 +68,9 @@ export const NumberUpDown = ({
 }
 
 const styles = StyleSheet.create({
+  noField: { flex: 1 },
   buttonText: { fontSize: 22 },
+  button: { paddingHorizontal: 30 },
   container: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
