@@ -112,7 +112,10 @@ subscribe([(s) => s.loaded, (s) => s.value], (loaded, value) => {
 // re-save state whenever it changes
 const debouncedSaveState = debounce(1000, (state: State) => {
   console.log('saving state!')
-  const excludeTemp = Object.keys(tempState).map((key) => ({ [key]: undefined }), {})
-  saveState(storeKey, merge(state, excludeTemp))
+  const filteredState = Object.keys(savedState).reduce(
+    (acc, key) => ({ ...acc, [key]: state[key] }),
+    {}
+  )
+  saveState(storeKey, filteredState)
 })
 subscribe(debouncedSaveState)
