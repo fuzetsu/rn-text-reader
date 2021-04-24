@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import { StyleSheet, Text, StatusBar, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, StatusBar, ScrollView, TouchableOpacity, View } from 'react-native'
 import * as Speech from 'expo-speech'
 import * as DocumentPicker from 'expo-document-picker'
 import { readAsStringAsync } from 'expo-file-system'
@@ -175,19 +175,19 @@ export default function App() {
     (reading ? 'Stop' : 'Read') + (chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : '')
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar />
-      <ButtonGroup>
-        {chunks.length > 0 && <Button text={readBtnLabel} onPress={() => setReading(!reading)} />}
-        {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
-        {!reading && value && <Button text="Clear" onPress={() => changeValue('')} />}
-      </ButtonGroup>
       {!reading && (
-        <ButtonGroup>
-          <Button text="Paste" onPress={paste} />
-          <Button text="Edit text" onPress={() => setEditText(true)} />
-          <Button text="Load file" onPress={loadFile} />
-        </ButtonGroup>
+        <>
+          <ButtonGroup>
+            <Button text="Paste" onPress={paste} />
+            <Button text="Edit text" onPress={() => setEditText(true)} />
+          </ButtonGroup>
+          <ButtonGroup>
+            <Button text="Load file" onPress={loadFile} />
+            {value && <Button text="Clear" onPress={() => changeValue('')} />}
+          </ButtonGroup>
+        </>
       )}
       <Label text="Language" />
       <Picker selectedValue={language} onValueChange={(x) => setState({ language: x })}>
@@ -223,39 +223,47 @@ export default function App() {
         max="100"
         onChange={(x) => setState({ rate: x })}
       />
-      {chunks.length > 0 && <Label text="Chunk" />}
-      {chunks.length > 1 && (
+      {chunks.length > 0 && (
         <>
-          <Picker selectedValue={chunkIndex} onValueChange={(x) => setState({ chunkIndex: x })}>
-            {chunks.map((chunk, idx) => (
-              <Picker.Item key={chunk} label={`${idx + 1} - ${chunk.slice(0, 50)}`} value={idx} />
-            ))}
-          </Picker>
-          <NumberUpDown
-            noField
-            value={chunkIndex}
-            style={{ marginTop: 4 }}
-            step="1"
-            min="0"
-            max={chunks.length - 1}
-            onChange={(x) => setState({ chunkIndex: Number(x) })}
-            minusText="<"
-            plusText=">"
-          />
+          <Label text="Chunk" />
+          {chunks.length > 1 && (
+            <Picker selectedValue={chunkIndex} onValueChange={(x) => setState({ chunkIndex: x })}>
+              {chunks.map((chunk, idx) => (
+                <Picker.Item key={chunk} label={`${idx + 1} - ${chunk.slice(0, 50)}`} value={idx} />
+              ))}
+            </Picker>
+          )}
+          <ScrollView style={styles.textScroll}>
+            <Text style={styles.text}>{chunks[chunkIndex]?.trim()}</Text>
+          </ScrollView>
         </>
       )}
-      <Text style={{ marginTop: 5 }}>{chunks[chunkIndex]?.trim()}</Text>
-    </ScrollView>
+      {chunks.length > 1 && (
+        <NumberUpDown
+          noField
+          value={chunkIndex}
+          style={{ marginTop: 4 }}
+          step="1"
+          min="0"
+          max={chunks.length - 1}
+          onChange={(x) => setState({ chunkIndex: Number(x) })}
+          minusText="<"
+          plusText=">"
+        />
+      )}
+      {chunks.length > 0 && (
+        <ButtonGroup>
+          <Button text={readBtnLabel} onPress={() => setReading(!reading)} />
+          {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
+        </ButtonGroup>
+      )}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  lightsOff: {
-    backgroundColor: 'black',
-    flex: 1,
-  },
-  container: {
-    marginBottom: 20,
-    padding: 10,
-  },
+  textScroll: { flex: 1 },
+  text: { marginTop: 5, fontSize: 17 },
+  lightsOff: { backgroundColor: 'black', flex: 1 },
+  container: { flex: 1, marginBottom: 20, padding: 10 },
 })
