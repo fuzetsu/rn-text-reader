@@ -17,7 +17,7 @@ export const initialState: State = {
   value: sampleText,
   language: 'en-US',
   voice: 'en-us-x-tpd-network',
-  pitch: '0.9',
-  rate: '1.3',
+  pitch: '1',
+  rate: '1',
   chunkIndex: 0,
 }
