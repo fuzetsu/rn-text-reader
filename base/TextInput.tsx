@@ -15,5 +15,6 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
     borderRadius: 4,
+    margin: 2,
   },
 })
