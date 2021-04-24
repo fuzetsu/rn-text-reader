@@ -1,14 +1,11 @@
-import React, { PropsWithChildren, ReactNode } from 'react'
+import React, { PropsWithChildren, Children } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { truthy } from '../lib/util'
 
-type Props = PropsWithChildren<{}>
-
-export const ButtonGroup = ({ children }: Props) => (
+export const ButtonGroup = ({ children }: PropsWithChildren<{}>) => (
   <View style={styles.container}>
-    {[]
-      .concat(children)
-      .filter<ReactNode>(truthy)
+    {Children.toArray(children)
+      .filter(truthy)
       .map((child, idx) => (
         <View key={idx} style={styles.button}>
           {child}
