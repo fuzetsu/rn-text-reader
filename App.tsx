@@ -151,17 +151,19 @@ export default function App() {
           <>
             <StatusBar hidden />
             <TouchableOpacity
-              style={[
-                styles.lightsOff,
-                { justifyContent: 'center', alignContent: 'center', padding: 20 },
-              ]}
+              style={styles.lightsOff}
               onPress={() => {
                 setLightsOnDoublePress()
                 setShowText(!showText)
               }}
             >
               {showText && (
-                <Text style={[{ fontSize: 24, color: 'white' }]}>{chunks[chunkIndex]?.trim()}</Text>
+                <>
+                  <Text style={[styles.lightsOffText, styles.readPercentage]}>
+                    {(((chunkIndex + 1) / chunks.length) * 100).toFixed(1)}%
+                  </Text>
+                  <Text style={styles.lightsOffText}>{chunks[chunkIndex]?.trim()}</Text>
+                </>
               )}
             </TouchableOpacity>
           </>
@@ -301,6 +303,14 @@ export default function App() {
 const styles = StyleSheet.create({
   textScroll: { flex: 1 },
   text: { marginTop: 5, fontSize: 17 },
-  lightsOff: { backgroundColor: 'black', flex: 1 },
+  lightsOff: {
+    backgroundColor: 'black',
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
+    padding: 20,
+  },
+  lightsOffText: { fontSize: 24, color: 'white' },
+  readPercentage: { color: '#999', textAlign: 'center', marginBottom: 20 },
   container: { flex: 1, paddingBottom: 15, padding: 10 },
 })
