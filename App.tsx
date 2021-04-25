@@ -1,9 +1,18 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, StatusBar, ScrollView, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import {
+  StyleSheet,
+  Text,
+  StatusBar,
+  ScrollView,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from 'react-native'
 import * as Speech from 'expo-speech'
 import * as DocumentPicker from 'expo-document-picker'
 import { readAsStringAsync } from 'expo-file-system'
 import Clipboard from 'expo-clipboard'
+import * as Notifications from 'expo-notifications'
 
 import {
   setChunkIndex,
@@ -17,9 +26,27 @@ import {
   updateValue,
   useStore,
 } from './state'
-import { retryPromise, chunkStats } from './lib/util'
+import { retryPromise, chunkStats, genId } from './lib/util'
 import { Label, Picker, TextInput, ButtonGroup, NumberUpDown, Button, TempState } from './base'
 import { useDoublePress, useKeepAwake } from './lib/hooks'
+
+Notifications.setNotificationCategoryAsync('reader-controls-start', [
+  { buttonTitle: 'Start', identifier: 'start', options: { opensAppToForeground: false } },
+])
+
+Notifications.setNotificationCategoryAsync('reader-controls-stop', [
+  { buttonTitle: 'Stop', identifier: 'stop', options: { opensAppToForeground: false } },
+])
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }
+  },
+})
 
 export default function App() {
   const {
@@ -38,6 +65,42 @@ export default function App() {
   } = useStore()
 
   useKeepAwake(lightsOff)
+
+  const [canNotify, setCanNotify] = useState(false)
+  useEffect(() => {
+    Notifications.getPermissionsAsync().then(async ({ status }) => {
+      if (status !== 'granted') {
+        status = (await Notifications.requestPermissionsAsync()).status
+      }
+      setCanNotify(status === 'granted')
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!canNotify) return
+    const sub = Notifications.addNotificationResponseReceivedListener(event => {
+      if (event.actionIdentifier === 'stop') {
+        setReading(false)
+      } else if (event.actionIdentifier === 'start') {
+        setReading(true)
+      }
+    })
+    const identifier = genId()
+    Notifications.scheduleNotificationAsync({
+      identifier,
+      content: {
+        categoryIdentifier: reading ? 'reader-controls-stop' : 'reader-controls-start',
+        title: 'Reader controls',
+        sound: null,
+        vibrate: [],
+      },
+      trigger: null,
+    })
+    return () => {
+      sub.remove()
+      Notifications.dismissNotificationAsync(identifier)
+    }
+  }, [canNotify, reading])
 
   useEffect(() => {
     Speech.stop()
@@ -80,6 +143,12 @@ export default function App() {
     return () => (cancel = true)
   }, [reading, chunkIndex, voice, pitch, speed, chunks, value])
 
+  const colorScheme = useColorScheme()
+  const containerStyle = [
+    styles.container,
+    { backgroundColor: colorScheme === 'dark' ? 'black' : 'white' },
+  ]
+
   const setLightsOnDoublePress = useDoublePress(() => setLightsOff(false))
 
   if (lightsOff) {
@@ -102,7 +171,7 @@ export default function App() {
     return (
       <TempState value={value}>
         {(text, setText) => (
-          <View style={styles.container}>
+          <View style={containerStyle}>
             <StatusBar />
             <Label text="Text to read" />
             <TextInput
@@ -136,7 +205,7 @@ export default function App() {
     (reading ? 'Stop' : 'Read') + (chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : '')
 
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <StatusBar />
       {!reading && (
         <>
@@ -223,5 +292,5 @@ const styles = StyleSheet.create({
   textScroll: { flex: 1 },
   text: { marginTop: 5, fontSize: 17 },
   lightsOff: { backgroundColor: 'black', flex: 1 },
-  container: { flex: 1, marginBottom: 10, padding: 10 },
+  container: { flex: 1, paddingBottom: 15, padding: 10 },
 })

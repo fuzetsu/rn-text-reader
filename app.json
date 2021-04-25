@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "rn-text-reader",
+    "name": "RN Text Reader",
     "slug": "rn-text-reader",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,6 +10,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "userInterfaceStyle": "automatic",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
