@@ -87,7 +87,7 @@ export default function App() {
       identifier,
       content: {
         categoryIdentifier: reading ? 'reader-controls-stop' : 'reader-controls-start',
-        title: 'Reader controls',
+        title: `${reading ? 'Reading' : 'Read'} ${chunks.length} chunks`,
         autoDismiss: false,
       },
       trigger: null,
@@ -96,7 +96,7 @@ export default function App() {
       sub.remove()
       Notifications.dismissNotificationAsync(identifier)
     }
-  }, [canNotify, reading])
+  }, [canNotify, reading, chunks])
 
   useEffect(() => {
     Speech.stop()
