@@ -88,6 +88,7 @@ export default function App() {
       content: {
         categoryIdentifier: reading ? 'reader-controls-stop' : 'reader-controls-start',
         title: 'Reader controls',
+        sticky: true,
       },
       trigger: null,
     })
