@@ -9,10 +9,10 @@ import {
   useColorScheme,
 } from 'react-native'
 import * as Speech from 'expo-speech'
-import * as DocumentPicker from 'expo-document-picker'
+import * as Notifications from 'expo-notifications'
+import { getDocumentAsync } from 'expo-document-picker'
 import { readAsStringAsync } from 'expo-file-system'
 import Clipboard from 'expo-clipboard'
-import * as Notifications from 'expo-notifications'
 
 import {
   setChunkIndex,
@@ -70,18 +70,18 @@ export default function App() {
 
     Notifications.getPermissionsAsync()
       .then(res => (res.status === 'granted' ? res : Notifications.requestPermissionsAsync()))
-      .then(({ status }) => setCanNotify(status === 'granted'))
+      .then(res => setCanNotify(res.status === 'granted'))
+
+    const sub = Notifications.addNotificationResponseReceivedListener(event => {
+      if (event.actionIdentifier === 'stop') setReading(false)
+      else if (event.actionIdentifier === 'start') setReading(true)
+    })
+
+    return () => sub.remove()
   }, [])
 
   useEffect(() => {
-    if (!canNotify) return
-    const sub = Notifications.addNotificationResponseReceivedListener(event => {
-      if (event.actionIdentifier === 'stop') {
-        setReading(false)
-      } else if (event.actionIdentifier === 'start') {
-        setReading(true)
-      }
-    })
+    if (!canNotify || chunks.length <= 0) return
     const identifier = genId()
     Notifications.scheduleNotificationAsync({
       identifier,
@@ -92,10 +92,7 @@ export default function App() {
       },
       trigger: null,
     })
-    return () => {
-      sub.remove()
-      Notifications.dismissNotificationAsync(identifier)
-    }
+    return () => Notifications.dismissNotificationAsync(identifier)
   }, [canNotify, reading, chunks])
 
   useEffect(() => {
@@ -149,18 +146,28 @@ export default function App() {
 
   if (lightsOff) {
     return (
-      <>
-        <StatusBar hidden />
-        <TouchableOpacity style={styles.lightsOff} onPress={setLightsOnDoublePress} />
-      </>
+      <TempState value={false}>
+        {(showText, setShowText) => (
+          <>
+            <StatusBar hidden />
+            <TouchableOpacity
+              style={[
+                styles.lightsOff,
+                { justifyContent: 'center', alignContent: 'center', padding: 20 },
+              ]}
+              onPress={() => {
+                setLightsOnDoublePress()
+                setShowText(!showText)
+              }}
+            >
+              {showText && (
+                <Text style={[{ fontSize: 24, color: 'white' }]}>{chunks[chunkIndex]?.trim()}</Text>
+              )}
+            </TouchableOpacity>
+          </>
+        )}
+      </TempState>
     )
-  }
-
-  const paste = () => Clipboard.getStringAsync().then(updateValue)
-
-  const loadFile = async () => {
-    const res = await DocumentPicker.getDocumentAsync({ type: 'text/*' })
-    if (res.type === 'success') updateValue(await readAsStringAsync(res.uri))
   }
 
   if (editText) {
@@ -193,6 +200,13 @@ export default function App() {
         )}
       </TempState>
     )
+  }
+
+  const paste = () => Clipboard.getStringAsync().then(updateValue)
+
+  const loadFile = async () => {
+    const res = await getDocumentAsync({ type: 'text/*' })
+    if (res.type === 'success') updateValue(await readAsStringAsync(res.uri))
   }
 
   const loadingPicker = <Picker.Item value="" label="Loading..." />

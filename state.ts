@@ -70,9 +70,7 @@ export const setEditText = setter('editText')
 export const updateValue = (value: string) => set({ value, chunkIndex: 0 })
 
 // restore saved state
-getSavedState(storeKey).then((state: SavedState) =>
-  useStore.set([state, tempState, { loaded: true }])
-)
+getSavedState(storeKey).then((state: SavedState) => set([state, tempState, { loaded: true }]))
 
 // fetch voices/languages on load
 subscribe(
