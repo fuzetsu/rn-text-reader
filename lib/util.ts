@@ -24,13 +24,13 @@ export const saveState = async (key: string, state: any) => {
   }
 }
 
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const retryPromise = <T extends (...args: any[]) => Promise<any>>(
   times: number,
   promiseFn: T
 ): ReturnType<T> => {
-  return promiseFn().catch(async (error) => {
+  return promiseFn().catch(async error => {
     console.log('promised failed, retry', times, error)
     if (times > 0) {
       await sleep(200)
@@ -46,7 +46,7 @@ export const getVoices = async () => {
 
   return {
     voices: voices.sort(sortBy('name')),
-    languages: [...new Set(voices.map((x) => x.language))].sort(),
+    languages: [...new Set(voices.map(x => x.language))].sort(),
   }
 }
 
@@ -81,7 +81,7 @@ export const chunkStats = (value: string, chunks: string[]) => {
   return [
     `Finished reading ${wordCount} words`,
     `${averageCharPerChunk} characters per chunk on average`,
-    `Thanks for listening friendo`,
+    'Thanks for listening friendo',
   ].join('. ')
 }
 

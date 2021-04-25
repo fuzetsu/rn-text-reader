@@ -18,13 +18,8 @@ export const Button = ({ text, style, textStyle, disabled, primary, ...props }: 
 )
 
 const styles = StyleSheet.create({
-  primary: {
-    backgroundColor: 'rgb(70, 48, 235)',
-  },
-  buttonText: {
-    fontSize: 16,
-    color: 'white',
-  },
+  primary: { backgroundColor: 'rgb(70, 48, 235)' },
+  buttonText: { fontSize: 16, color: 'white' },
   disabled: { backgroundColor: '#333' },
   disabledText: { color: '#777' },
   button: {

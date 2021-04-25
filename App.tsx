@@ -78,7 +78,7 @@ export default function App() {
 
     let cancel = false
     return () => (cancel = true)
-  }, [reading, chunkIndex, voice, pitch, speed, chunks])
+  }, [reading, chunkIndex, voice, pitch, speed, chunks, value])
 
   const setLightsOnDoublePress = useDoublePress(() => setLightsOff(false))
 
@@ -153,16 +153,14 @@ export default function App() {
       <Label text="Language" />
       <Picker selectedValue={language} onValueChange={setLanguage}>
         {languages.length > 0
-          ? languages.map((language) => (
-              <Picker.Item key={language} label={language} value={language} />
-            ))
+          ? languages.map(x => <Picker.Item key={x} label={x} value={x} />)
           : loadingPicker}
       </Picker>
       <Label text="Voice" />
       <Picker selectedValue={voice} onValueChange={setVoice}>
         {filteredVoices.length > 0
-          ? filteredVoices.map((voice) => (
-              <Picker.Item key={voice.identifier} label={voice.name} value={voice.identifier} />
+          ? filteredVoices.map(x => (
+              <Picker.Item key={x.identifier} label={x.name} value={x.identifier} />
             ))
           : loadingPicker}
       </Picker>
@@ -206,7 +204,7 @@ export default function App() {
           step="1"
           min="0"
           max={chunks.length - 1}
-          onChange={(x) => setChunkIndex(Number(x))}
+          onChange={x => setChunkIndex(Number(x))}
           minusText="<"
           plusText=">"
         />

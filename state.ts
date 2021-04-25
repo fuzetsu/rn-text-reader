@@ -7,12 +7,6 @@ import { TempState } from './base'
 
 const storeKey = '@our-state'
 
-const sampleText = `
-An old silent pond.
-A frog jumps into the pond.
-Splash! Silence again.
-`.trim()
-
 export interface SavedState {
   value: string
   language: string
@@ -36,7 +30,7 @@ export interface TempState {
 export type State = SavedState & TempState
 
 const savedState: SavedState = {
-  value: sampleText,
+  value: 'An old silent pond.\nA frog jumps into the pond.\nSplash! Silence again.',
   language: 'en-US',
   voice: 'en-us-x-tpd-network',
   pitch: '1',
@@ -82,31 +76,31 @@ getSavedState(storeKey).then((state: SavedState) =>
 
 // fetch voices/languages on load
 subscribe(
-  (s) => s.loaded,
-  (loaded) => {
+  s => s.loaded,
+  loaded => {
     if (!loaded) return
     retryPromise(3, getVoices).then(({ voices, languages }) =>
-      set({ languages, voices, language: (x) => (languages.includes(x) ? x : languages[0]) })
+      set({ languages, voices, language: x => (languages.includes(x) ? x : languages[0]) })
     )
   }
 )
 
 // sync language choices
-subscribe([(s) => s.language, (s) => s.voices], (language, voices) => {
+subscribe([s => s.language, s => s.voices], (language, voices) => {
   if (!language || voices.length <= 0) return
-  const filteredVoices = voices.filter((voice) => voice.language === language)
+  const filteredVoices = voices.filter(voice => voice.language === language)
   set({
     filteredVoices,
-    voice: (voice) =>
-      filteredVoices.some((x) => x.identifier === voice) ? voice : filteredVoices[0].identifier,
+    voice: voice =>
+      filteredVoices.some(x => x.identifier === voice) ? voice : filteredVoices[0].identifier,
   })
 })
 
 // chunk text when value changes
-subscribe([(s) => s.loaded, (s) => s.value], (loaded, value) => {
+subscribe([s => s.loaded, s => s.value], (loaded, value) => {
   if (!loaded) return
   const chunks = chunkText(value)
-  set({ reading: false, chunks, chunkIndex: (x) => (x >= chunks.length ? 0 : x) })
+  set({ reading: false, chunks, chunkIndex: x => (x >= chunks.length ? 0 : x) })
 })
 
 // re-save state whenever it changes

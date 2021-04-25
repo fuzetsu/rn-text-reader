@@ -24,5 +24,5 @@ export const useDoublePress = <T extends () => void>(fn: T) => {
   return useCallback(() => {
     if (Date.now() - lastPress.current < 500) fnRef.current()
     lastPress.current = Date.now()
-  }, [])
+  }, [fnRef])
 }
