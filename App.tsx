@@ -30,24 +30,6 @@ import { retryPromise, chunkStats, genId } from './lib/util'
 import { Label, Picker, TextInput, ButtonGroup, NumberUpDown, Button, TempState } from './base'
 import { useDoublePress, useKeepAwake } from './lib/hooks'
 
-Notifications.setNotificationCategoryAsync('reader-controls-start', [
-  { buttonTitle: 'Start', identifier: 'start', options: { opensAppToForeground: false } },
-])
-
-Notifications.setNotificationCategoryAsync('reader-controls-stop', [
-  { buttonTitle: 'Stop', identifier: 'stop', options: { opensAppToForeground: false } },
-])
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => {
-    return {
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }
-  },
-})
-
 export default function App() {
   const {
     value,
@@ -68,12 +50,27 @@ export default function App() {
 
   const [canNotify, setCanNotify] = useState(false)
   useEffect(() => {
-    Notifications.getPermissionsAsync().then(async ({ status }) => {
-      if (status !== 'granted') {
-        status = (await Notifications.requestPermissionsAsync()).status
-      }
-      setCanNotify(status === 'granted')
+    Notifications.setNotificationCategoryAsync('reader-controls-start', [
+      { buttonTitle: 'Start', identifier: 'start', options: { opensAppToForeground: false } },
+    ])
+
+    Notifications.setNotificationCategoryAsync('reader-controls-stop', [
+      { buttonTitle: 'Stop', identifier: 'stop', options: { opensAppToForeground: false } },
+    ])
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => {
+        return {
+          shouldShowAlert: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        }
+      },
     })
+
+    Notifications.getPermissionsAsync()
+      .then(res => (res.status === 'granted' ? res : Notifications.requestPermissionsAsync()))
+      .then(({ status }) => setCanNotify(status === 'granted'))
   }, [])
 
   useEffect(() => {
@@ -91,8 +88,6 @@ export default function App() {
       content: {
         categoryIdentifier: reading ? 'reader-controls-stop' : 'reader-controls-start',
         title: 'Reader controls',
-        sound: null,
-        vibrate: [],
       },
       trigger: null,
     })
