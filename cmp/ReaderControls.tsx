@@ -8,12 +8,12 @@ export function ReaderControls() {
 
   if (chunks.length <= 0) return null
 
-  const readBtnLabel =
-    (reading ? 'Stop' : 'Read') + (chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : '')
+  const chunkProgress = chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : ''
+  const readLabel = (reading ? 'Stop' : 'Read') + chunkProgress
 
   return (
     <ButtonGroup>
-      <Button primary text={readBtnLabel} onPress={() => setReading(!reading)} />
+      <Button primary text={readLabel} onPress={() => setReading(!reading)} />
       {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
     </ButtonGroup>
   )
