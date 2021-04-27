@@ -9,7 +9,7 @@ import { setEditText, updateValue } from '../state/actions'
 import { readAsStringAsync } from 'expo-file-system'
 
 export function LoadText() {
-  const value = useStore(s => s.value)
+  const hasValue = useStore(s => Boolean(s.value))
 
   const paste = () => Clipboard.getStringAsync().then(updateValue)
 
@@ -26,7 +26,7 @@ export function LoadText() {
       </ButtonGroup>
       <ButtonGroup>
         <Button text="Load file" onPress={loadFile} />
-        {value && <Button text="Clear" onPress={() => updateValue('')} />}
+        {hasValue && <Button text="Clear" onPress={() => updateValue('')} />}
       </ButtonGroup>
     </>
   )
