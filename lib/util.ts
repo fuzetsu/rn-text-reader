@@ -89,8 +89,15 @@ export const genId = () => Math.random().toString(36).slice(2)
 
 export const debounce = <T extends (...args: any) => void>(ms: number, fn: T) => {
   let id = 0
-  return (...args: Parameters<T>) => {
-    window.clearTimeout(id)
+  const cancel = () => window.clearTimeout(id)
+  const debounced = (...args: Parameters<T>) => {
+    cancel()
     id = window.setTimeout(() => fn(...(args as any)), ms)
   }
+  debounced.now = (...args: Parameters<T>) => {
+    cancel()
+    fn(...(args as any))
+  }
+  debounced.cancel = cancel
+  return debounced
 }
