@@ -1,9 +1,11 @@
 import React, { PropsWithChildren, Children } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native'
 import { truthy } from '../lib/util'
 
-export const ButtonGroup = ({ children }: PropsWithChildren<{}>) => (
-  <View style={styles.container}>
+type Props = PropsWithChildren<{ style?: StyleProp<ViewStyle> }>
+
+export const ButtonGroup = ({ children, style }: Props) => (
+  <View style={[styles.container, style]}>
     {Children.toArray(children)
       .filter(truthy)
       .map((child, idx) => (
