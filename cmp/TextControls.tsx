@@ -8,15 +8,8 @@ import { setEditText, updateValue } from '../state/actions'
 
 import { readAsStringAsync } from 'expo-file-system'
 
-export function LoadText() {
+export function TextControls() {
   const hasValue = useStore(s => Boolean(s.value))
-
-  const paste = () => Clipboard.getStringAsync().then(updateValue)
-
-  const loadFile = async () => {
-    const res = await getDocumentAsync({ type: 'text/*' })
-    if (res.type === 'success') updateValue(await readAsStringAsync(res.uri))
-  }
 
   return (
     <>
@@ -30,4 +23,11 @@ export function LoadText() {
       </ButtonGroup>
     </>
   )
+}
+
+const paste = () => Clipboard.getStringAsync().then(updateValue)
+
+const loadFile = async () => {
+  const res = await getDocumentAsync({ type: 'text/*' })
+  if (res.type === 'success') updateValue(await readAsStringAsync(res.uri))
 }

@@ -1,6 +1,6 @@
 export * from './EditText'
 export * from './LightsOff'
-export * from './LoadText'
+export * from './TextControls'
 export * from './VoiceControls'
 export * from './ChunkControls'
 export * from './ReaderControls'

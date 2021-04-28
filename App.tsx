@@ -6,7 +6,7 @@ import {
   ChunkControls,
   EditText,
   LightsOff,
-  LoadText,
+  TextControls,
   ReaderControls,
   SpeechService,
   VoiceControls,
@@ -32,7 +32,7 @@ export default function App() {
         <EditText />
       ) : (
         <>
-          <LoadText />
+          <TextControls />
           <VoiceControls />
           <ChunkControls />
           <ReaderControls />
