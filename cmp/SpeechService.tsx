@@ -30,10 +30,7 @@ export function SpeechService() {
 
   useEffect(() => {
     Speech.stop()
-    if (!reading) {
-      setLightsOff(false)
-      return
-    }
+    if (!reading) return
 
     const speak = (text: string) =>
       new Promise<'done' | 'stopped'>((resolve, reject) =>
@@ -57,6 +54,7 @@ export function SpeechService() {
       if (!cancel && status === 'done') {
         if (chunkIndex + 1 >= chunks.length) {
           if (chunks.length > 1) await speak(chunkStats(value, chunks))
+          setLightsOff(false)
           setReading(false)
           return
         }
