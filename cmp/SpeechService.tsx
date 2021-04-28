@@ -23,7 +23,7 @@ Notifications.setNotificationHandler({
   },
 })
 
-const ID = 'reader-controls'
+const NOTIFICATION_ID = 'reader-controls'
 
 export function SpeechService() {
   const { reading, speed, pitch, chunks, chunkIndex, value, voice } = useStore()
@@ -88,7 +88,7 @@ export function SpeechService() {
   useEffect(() => {
     if (!canNotify || chunks.length <= 0) return
     Notifications.scheduleNotificationAsync({
-      identifier: ID,
+      identifier: NOTIFICATION_ID,
       content: {
         categoryIdentifier: reading ? 'reader-controls-stop' : 'reader-controls-start',
         title: `${reading ? 'Reading' : 'Read'} ${chunks.length} chunks`,
@@ -96,7 +96,7 @@ export function SpeechService() {
       },
       trigger: null,
     })
-    return () => Notifications.dismissNotificationAsync(ID)
+    return () => Notifications.dismissNotificationAsync(NOTIFICATION_ID)
   }, [canNotify, reading, chunks])
 
   return null
