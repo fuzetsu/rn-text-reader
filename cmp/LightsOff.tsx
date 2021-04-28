@@ -13,7 +13,7 @@ export function LightsOff() {
 
   const chunkProgress = () => {
     const percent = ((chunkIndex + 1) / chunks.length) * 100
-    return `${chunkIndex + 1}/${chunks.length} –  ${percent.toFixed(1)}%`
+    return `${chunkIndex + 1}/${chunks.length} – ${percent.toFixed(1)}%`
   }
 
   return (
