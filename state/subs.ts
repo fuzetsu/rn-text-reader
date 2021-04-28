@@ -1,23 +1,7 @@
-import { savedState, tempState, useStore } from './state'
-import { retryPromise, getVoices, chunkText, debounce, saveState, getSavedState } from '../lib/util'
-import { SavedState, State } from './type'
-
-const storeKey = '@our-state'
+import { useStore } from './state'
+import { retryPromise, getVoices, chunkText } from '../lib/util'
 
 const { set, subscribe } = useStore
-
-// restore saved state
-getSavedState(storeKey).then((state: SavedState) => set([state, tempState, { loaded: true }]))
-
-// re-save state whenever it changes
-const debouncedSaveState = debounce(1000, (state: State) => {
-  const filteredState = Object.keys(savedState).reduce(
-    (acc, key) => ({ ...acc, [key]: state[key] }),
-    {}
-  )
-  saveState(storeKey, filteredState)
-})
-subscribe(debouncedSaveState)
 
 // fetch voices/languages on load
 subscribe(
