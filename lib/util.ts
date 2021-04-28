@@ -101,3 +101,9 @@ export const debounce = <T extends (...args: any) => void>(ms: number, fn: T) =>
   debounced.cancel = cancel
   return debounced
 }
+
+export const nextIndex = (arr: { length: number }, index: number) =>
+  index + 1 >= arr.length ? 0 : index + 1
+
+export const prevIndex = (arr: { length: number }, index: number) =>
+  index - 1 < 0 ? arr.length - 1 : index - 1
