@@ -14,6 +14,7 @@ interface Props {
   style?: StyleProp<ViewStyle>
   minusText?: string
   plusText?: string
+  plain?: boolean
 }
 
 export const NumberUpDown = ({
@@ -25,6 +26,7 @@ export const NumberUpDown = ({
   min,
   max,
   placeholder,
+  plain,
   minusText = '-',
   plusText = '+',
 }: Props) => {
@@ -41,6 +43,7 @@ export const NumberUpDown = ({
   return (
     <View style={[styles.container, style]}>
       <Button
+        plain={plain}
         text={minusText}
         textStyle={styles.buttonText}
         disabled={!isNaN(numMin) && numValue <= numMin}
@@ -57,6 +60,7 @@ export const NumberUpDown = ({
         />
       )}
       <Button
+        plain={plain}
         text={plusText}
         disabled={!isNaN(numMax) && numValue >= numMax}
         textStyle={styles.buttonText}
