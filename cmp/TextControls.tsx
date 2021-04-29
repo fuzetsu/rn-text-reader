@@ -9,7 +9,9 @@ import { setEditText, updateValue } from '../state/actions'
 import { readAsStringAsync } from 'expo-file-system'
 
 export function TextControls() {
-  const hasValue = useStore(s => Boolean(s.value))
+  const [reading, hasValue] = useStore([s => s.reading, s => Boolean(s.value)])
+
+  if (reading) return null
 
   return (
     <>
