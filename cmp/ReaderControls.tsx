@@ -14,7 +14,7 @@ export function ReaderControls() {
   return (
     <ButtonGroup>
       <Button primary text={readLabel} onPress={() => setReading(!reading)} />
-      {reading && <Button text="Lights off" onPress={() => setLightsOff(true)} />}
+      <Button text="Lights off" onPress={() => setLightsOff(true)} />
     </ButtonGroup>
   )
 }
