@@ -22,7 +22,7 @@ export const useDoublePress = <T extends () => void>(fn: T) => {
 
   const lastPress = useRef(0)
   return useCallback(() => {
-    if (Date.now() - lastPress.current < 500) fnRef.current()
+    if (Date.now() - lastPress.current < 300) fnRef.current()
     lastPress.current = Date.now()
   }, [fnRef])
 }
