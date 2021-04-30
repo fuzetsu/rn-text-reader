@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
-import { StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
 import { Button, ButtonGroup, NumberUpDown } from '../base'
-import { useKeepAwake } from '../lib/hooks'
-import { nextIndex } from '../lib/util'
+import { useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
 import { setChunkIndex, setLightsOff, setReading } from '../state/actions'
 
-const MODES = ['on', 'on-reverse', 'off'] as const
-type Mode = typeof MODES[number]
+type Mode = 'on' | 'on-reverse' | 'off'
 
 export function LightsOff() {
   const [chunkIndex, chunks, reading] = useStore([s => s.chunkIndex, s => s.chunks, s => s.reading])
   const [mode, setMode] = useState<Mode>('off')
+
+  const setOnDoublePress = useDoublePress(() => setMode('on'))
 
   useKeepAwake(true)
 
@@ -20,16 +20,19 @@ export function LightsOff() {
     return `${chunkIndex + 1}/${chunks.length} – ${percent.toFixed(1)}%`
   }
 
-  const cycleMode = () => setMode(MODES[nextIndex(MODES, MODES.indexOf(mode))])
-
   return (
-    <TouchableOpacity
-      style={[styles.container, mode === 'on-reverse' && styles.reverse]}
-      onPress={cycleMode}
-    >
-      {mode !== 'off' && (
+    <View style={[styles.container, mode === 'on-reverse' && styles.reverse]}>
+      {mode === 'off' ? (
+        <TouchableOpacity style={styles.emptySpace} onPress={setOnDoublePress} />
+      ) : (
         <>
-          <Text style={styles.text}>{chunks[chunkIndex]?.trim()}</Text>
+          <TouchableOpacity
+            onPress={() => setMode(mode === 'on' ? 'on-reverse' : 'on')}
+            style={styles.emptySpace}
+          />
+          <Text onPress={() => setMode('off')} style={styles.text}>
+            {chunks[chunkIndex]?.trim()}
+          </Text>
           <Text style={styles.readPercentage}>{chunkProgress()}</Text>
           <NumberUpDown
             plain
@@ -48,11 +51,12 @@ export function LightsOff() {
           </ButtonGroup>
         </>
       )}
-    </TouchableOpacity>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  emptySpace: { flex: 1 },
   reverse: { flexDirection: 'column-reverse' },
   container: {
     backgroundColor: 'black',
