@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
-import { Button, ButtonGroup, NumberUpDown } from '../base'
 import { useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
-import { setChunkIndex, setLightsOff, setReading } from '../state/actions'
+import { ReaderControls } from './ReaderControls'
 
 type Mode = 'on' | 'on-reverse' | 'off'
 
 export function LightsOff() {
-  const [chunkIndex, chunks, reading] = useStore([s => s.chunkIndex, s => s.chunks, s => s.reading])
+  const [chunkIndex, chunks] = useStore([s => s.chunkIndex, s => s.chunks])
   const [mode, setMode] = useState<Mode>('off')
 
   const setOnDoublePress = useDoublePress(() => setMode('on'))
@@ -34,21 +33,7 @@ export function LightsOff() {
             {chunks[chunkIndex]?.trim()}
           </Text>
           <Text style={styles.readPercentage}>{chunkProgress()}</Text>
-          <NumberUpDown
-            plain
-            noField
-            step="1"
-            min="0"
-            max={chunks.length - 1}
-            minusText="<"
-            plusText=">"
-            value={chunkIndex}
-            onChange={index => setChunkIndex(Number(index))}
-          />
-          <ButtonGroup>
-            <Button plain text={reading ? 'Stop' : 'Read'} onPress={() => setReading(!reading)} />
-            <Button plain text="Lights on" onPress={() => setLightsOff(false)} />
-          </ButtonGroup>
+          <ReaderControls plain />
         </>
       )}
     </View>

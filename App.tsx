@@ -3,7 +3,7 @@ import { StyleSheet, StatusBar, View, useColorScheme } from 'react-native'
 
 import { useStore } from './state'
 import {
-  ChunkControls,
+  ChunkPicker,
   EditText,
   LightsOff,
   TextControls,
@@ -34,7 +34,7 @@ export default function App() {
         <>
           <TextControls />
           <VoiceControls />
-          <ChunkControls />
+          <ChunkPicker />
           <ReaderControls />
         </>
       )}
