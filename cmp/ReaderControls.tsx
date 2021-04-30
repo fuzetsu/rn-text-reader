@@ -38,7 +38,7 @@ export function ReaderControls({ plain }: { plain?: boolean }) {
         <Button
           plain={plain}
           text={`Lights ${lightsOff ? 'on' : 'off'}`}
-          onPress={() => setLightsOff(true)}
+          onPress={() => setLightsOff(!lightsOff)}
         />
       </ButtonGroup>
     </>
