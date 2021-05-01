@@ -16,7 +16,7 @@ export function ReaderControls({ plain }: { plain?: boolean }) {
   const chunkProgress = chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : ''
   const readLabel = (reading ? 'Stop' : 'Read') + chunkProgress
 
-  const btnReadProps = plain ? { plain } : { primary: true }
+  const readProps = plain ? { plain } : { primary: true }
 
   return (
     <>
@@ -34,7 +34,7 @@ export function ReaderControls({ plain }: { plain?: boolean }) {
         />
       )}
       <ButtonGroup>
-        <Button {...btnReadProps} text={readLabel} onPress={() => setReading(!reading)} />
+        <Button {...readProps} text={readLabel} onPress={() => setReading(!reading)} />
         <Button
           plain={plain}
           text={`Lights ${lightsOff ? 'on' : 'off'}`}
