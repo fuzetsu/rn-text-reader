@@ -32,7 +32,7 @@ export function LightsOff() {
         </Text>
       </View>
       <Text style={styles.readPercentage}>
-        {percent.toFixed(0)} <Icon name="percent" /> – {time} <Icon name="clock" />
+        {percent.toFixed(0)} <Icon name="percent-outline" /> – {time} <Icon name="clock" />
       </Text>
       <ReaderControls plain />
     </View>
