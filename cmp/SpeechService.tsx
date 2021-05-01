@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Alert } from 'react-native'
 import * as Speech from 'expo-speech'
 import * as Notifications from 'expo-notifications'
 import { useStore } from '../state'
@@ -50,7 +51,10 @@ export function SpeechService() {
         return
       }
 
-      const status = await retryPromise(5, () => speak(chunks[chunkIndex]))
+      const status = await retryPromise(5, () => speak(chunks[chunkIndex])).catch(() => {
+        setReading(false)
+        Alert.alert('Error', 'Something went wrong while trying to speak.')
+      })
       if (!cancel && status === 'done') {
         if (chunkIndex + 1 >= chunks.length) {
           if (chunks.length > 1) await speak(chunkStats(value, chunks))
