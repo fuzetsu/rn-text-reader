@@ -16,12 +16,14 @@ export function TextControls() {
   return (
     <>
       <ButtonGroup>
-        <Button text="Paste" onPress={paste} />
-        <Button text="Edit text" onPress={() => setEditText(true)} />
+        <Button icon={{ name: 'clipboard' }} text="Paste" onPress={paste} />
+        <Button icon={{ name: 'text-box' }} text="Edit text" onPress={() => setEditText(true)} />
       </ButtonGroup>
       <ButtonGroup>
-        <Button text="Load file" onPress={loadFile} />
-        {hasValue && <Button text="Clear" onPress={() => updateValue('')} />}
+        <Button icon={{ name: 'file' }} text="Load file" onPress={loadFile} />
+        {hasValue && (
+          <Button icon={{ name: 'trash-can' }} text="Clear" onPress={() => updateValue('')} />
+        )}
       </ButtonGroup>
     </>
   )

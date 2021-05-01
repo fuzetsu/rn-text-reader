@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native'
 import { TextInput } from './TextInput'
 import { Button } from './Button'
+
+type IconNames = ComponentProps<typeof Button>['icon']['name']
 
 interface Props {
   value: string | number
@@ -12,8 +14,8 @@ interface Props {
   placeholder?: string
   noField?: boolean
   style?: StyleProp<ViewStyle>
-  minusText?: string
-  plusText?: string
+  minusIcon?: IconNames
+  plusIcon?: IconNames
   plain?: boolean
 }
 
@@ -27,8 +29,8 @@ export const NumberUpDown = ({
   max,
   placeholder,
   plain,
-  minusText = '-',
-  plusText = '+',
+  minusIcon = 'minus',
+  plusIcon = 'plus',
 }: Props) => {
   const format = (x: number) =>
     x.toFixed(step.includes('.') ? step.slice(step.indexOf('.') + 1).length : 0)
@@ -44,8 +46,8 @@ export const NumberUpDown = ({
     <View style={[styles.container, style]}>
       <Button
         plain={plain}
-        text={minusText}
-        textStyle={styles.buttonText}
+        text=""
+        icon={{ name: minusIcon, size: 22 }}
         disabled={!isNaN(numMin) && numValue <= numMin}
         style={[styles.button, noFieldStyle]}
         onPress={() => onChange(format(numValue - numStep))}
@@ -61,9 +63,9 @@ export const NumberUpDown = ({
       )}
       <Button
         plain={plain}
-        text={plusText}
+        text=""
+        icon={{ name: plusIcon, size: 22 }}
         disabled={!isNaN(numMax) && numValue >= numMax}
-        textStyle={styles.buttonText}
         style={[styles.button, noFieldStyle]}
         onPress={() => onChange(format(numValue + numStep))}
       />
@@ -73,7 +75,6 @@ export const NumberUpDown = ({
 
 const styles = StyleSheet.create({
   noField: { flex: 1 },
-  buttonText: { fontSize: 22 },
   button: { paddingHorizontal: 40 },
   input: { flex: 1, textAlign: 'center' },
   container: {

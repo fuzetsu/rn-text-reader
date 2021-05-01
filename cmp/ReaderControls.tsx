@@ -13,8 +13,7 @@ export function ReaderControls({ plain }: { plain?: boolean }) {
 
   if (chunks.length <= 0) return null
 
-  const chunkProgress = chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : ''
-  const readLabel = (reading ? 'Stop' : 'Read') + chunkProgress
+  const readLabel = chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : ''
 
   const readProps = plain ? { plain } : { primary: true }
 
@@ -29,14 +28,20 @@ export function ReaderControls({ plain }: { plain?: boolean }) {
           min="0"
           max={chunks.length - 1}
           onChange={x => setChunkIndex(Number(x))}
-          minusText="<"
-          plusText=">"
+          minusIcon="arrow-left-thick"
+          plusIcon="arrow-right-thick"
         />
       )}
       <ButtonGroup>
-        <Button {...readProps} text={readLabel} onPress={() => setReading(!reading)} />
+        <Button
+          {...readProps}
+          icon={{ name: reading ? 'stop' : 'play' }}
+          text={readLabel}
+          onPress={() => setReading(!reading)}
+        />
         <Button
           plain={plain}
+          icon={{ name: lightsOff ? 'lightbulb' : 'lightbulb-off' }}
           text={`Lights ${lightsOff ? 'on' : 'off'}`}
           onPress={() => setLightsOff(!lightsOff)}
         />
