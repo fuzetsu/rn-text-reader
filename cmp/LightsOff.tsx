@@ -4,44 +4,42 @@ import { useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
 import { ReaderControls } from './ReaderControls'
 
-type Mode = 'on' | 'on-reverse' | 'off'
+const pad = (num: number) => ('00' + num).slice(-2)
 
 export function LightsOff() {
   const [chunkIndex, chunks] = useStore([s => s.chunkIndex, s => s.chunks])
-  const [mode, setMode] = useState<Mode>('off')
+  const [dark, setDark] = useState(true)
+  const [textTop, setTextTop] = useState(false)
 
-  const setOnDoublePress = useDoublePress(() => setMode('on'))
+  const setOnDoublePress = useDoublePress(() => setDark(false))
 
   useKeepAwake(true)
 
-  const chunkProgress = () => {
-    const percent = ((chunkIndex + 1) / chunks.length) * 100
-    return percent.toFixed(1) + '%'
-  }
+  if (dark) return <TouchableOpacity style={styles.container} onPress={setOnDoublePress} />
+
+  const percent = ((chunkIndex + 1) / chunks.length) * 100
+
+  const date = new Date()
+  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`
 
   return (
-    <View style={[styles.container, mode === 'on-reverse' && styles.reverse]}>
-      {mode === 'off' ? (
-        <TouchableOpacity style={styles.emptySpace} onPress={setOnDoublePress} />
-      ) : (
-        <>
-          <TouchableOpacity
-            onPress={() => setMode(mode === 'on' ? 'on-reverse' : 'on')}
-            style={styles.emptySpace}
-          />
-          <Text onPress={() => setMode('off')} style={styles.text}>
-            {chunks[chunkIndex]?.trim()}
-          </Text>
-          <Text style={styles.readPercentage}>{chunkProgress()}</Text>
-          <ReaderControls plain />
-        </>
-      )}
+    <View style={styles.container}>
+      <View style={[styles.fill, textTop && styles.reverse]}>
+        <TouchableOpacity onPress={() => setTextTop(!textTop)} style={styles.fill} />
+        <Text onPress={() => setDark(true)} style={styles.text}>
+          {chunks[chunkIndex]?.trim()}
+        </Text>
+      </View>
+      <Text style={styles.readPercentage}>
+        {percent.toFixed(0)}% – {time}
+      </Text>
+      <ReaderControls plain />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  emptySpace: { flex: 1 },
+  fill: { flex: 1 },
   reverse: { flexDirection: 'column-reverse' },
   container: {
     backgroundColor: 'black',
