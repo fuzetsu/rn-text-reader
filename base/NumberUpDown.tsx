@@ -1,9 +1,8 @@
-import React, { ComponentProps } from 'react'
+import React from 'react'
 import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native'
 import { TextInput } from './TextInput'
 import { Button } from './Button'
-
-type IconNames = ComponentProps<typeof Button>['icon']['name']
+import { IconProps } from './Icon'
 
 interface Props {
   value: string | number
@@ -14,8 +13,8 @@ interface Props {
   placeholder?: string
   noField?: boolean
   style?: StyleProp<ViewStyle>
-  minusIcon?: IconNames
-  plusIcon?: IconNames
+  minusIcon?: IconProps['name']
+  plusIcon?: IconProps['name']
   plain?: boolean
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
+import { Icon } from '../base'
 import { useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
 import { ReaderControls } from './ReaderControls'
@@ -31,7 +32,7 @@ export function LightsOff() {
         </Text>
       </View>
       <Text style={styles.readPercentage}>
-        {percent.toFixed(0)}% – {time}
+        {percent.toFixed(0)} <Icon name="percent" /> – {time} <Icon name="clock" />
       </Text>
       <ReaderControls plain />
     </View>

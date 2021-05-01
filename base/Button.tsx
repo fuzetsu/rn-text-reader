@@ -1,8 +1,6 @@
 import React, { ComponentProps } from 'react'
 import { TouchableOpacity, Text, StyleSheet, StyleProp, TextStyle } from 'react-native'
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
-
-type IconProps = ComponentProps<typeof Icon>
+import { Icon, IconProps } from './Icon'
 
 interface Props extends ComponentProps<typeof TouchableOpacity> {
   text: string
