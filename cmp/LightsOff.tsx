@@ -71,13 +71,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: { fontSize: 24, color: 'white' },
-  statsText: {
-    fontSize: 20,
-    color: '#999',
-  },
-  stats: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
+  statsText: { fontSize: 20, color: '#999' },
+  stats: { marginVertical: 10, flexDirection: 'row', justifyContent: 'space-around' },
 })
