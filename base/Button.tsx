@@ -31,8 +31,10 @@ export const Button = ({
       style,
     ]}
   >
-    {icon && <Icon size={16} {...icon} style={styles.icon} />}
-    <Text style={[styles.text, disabled && styles.disabledText, textStyle]}>{text}</Text>
+    <Text style={[styles.text, disabled && styles.disabledText, textStyle]}>
+      {icon && <Icon size={16} {...icon} style={styles.icon} />}
+      {text}
+    </Text>
   </TouchableOpacity>
 )
 
