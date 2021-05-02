@@ -29,7 +29,20 @@ export const useDoublePress = <T extends () => void>(fn: T) => {
   }, [fnRef])
 }
 
-export const useBatteryLevel = () => {
+export const useBatteryLevel = (): [battery: string, charging: boolean] => {
+  const [charging, setCharging] = useState(false)
+  useEffect(() => {
+    const updateCharging = (state: Battery.BatteryState) =>
+      setCharging(state === Battery.BatteryState.CHARGING)
+    const fetchCharging = () => Battery.getBatteryStateAsync().then(updateCharging)
+    fetchCharging()
+
+    const listener = Battery.addBatteryStateListener(({ batteryState }) =>
+      updateCharging(batteryState)
+    )
+    return () => listener.remove()
+  }, [])
+
   const [battery, setBattery] = useState('')
   useEffect(() => {
     const updateBattery = (level: number) => setBattery((level * 100).toFixed(0))
@@ -46,9 +59,7 @@ export const useBatteryLevel = () => {
     const listener = Battery.addBatteryLevelListener(({ batteryLevel }) =>
       updateBattery(batteryLevel)
     )
-    return () => {
-      listener.remove()
-    }
+    return () => listener.remove()
   }, [])
-  return battery
+  return [battery, charging]
 }

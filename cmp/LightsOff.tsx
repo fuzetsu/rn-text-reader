@@ -16,7 +16,7 @@ export function LightsOff() {
 
   const showControlsDoublePress = useDoublePress(() => setDark(false))
 
-  const batteryLevel = useBatteryLevel()
+  const [batteryLevel, charging] = useBatteryLevel()
 
   useKeepAwake(true)
 
@@ -30,7 +30,7 @@ export function LightsOff() {
   const stats: Stat[] = [
     { icon: 'clock', text: time },
     { icon: 'book-play', text: readPercent.toFixed(0) + '%' },
-    { icon: getBatteryIcon(Number(batteryLevel)), text: batteryLevel + '%' },
+    { icon: getBatteryIcon(Number(batteryLevel), charging), text: batteryLevel + '%' },
   ]
 
   return (
@@ -53,11 +53,12 @@ export function LightsOff() {
   )
 }
 
-const getBatteryIcon = (battery: number): IconProps['name'] => {
+const getBatteryIcon = (battery: number, charging: boolean): IconProps['name'] => {
   if (isNaN(battery)) return 'battery-alert'
-  return battery >= 100
-    ? 'battery'
-    : (`battery-${Math.round((battery / 100) * 10)}0` as IconProps['name'])
+  const extra = charging ? '-charging' : ''
+  const icon =
+    battery >= 100 ? 'battery' + extra : `battery${extra}-${Math.round((battery / 100) * 10)}0`
+  return icon as IconProps['name']
 }
 
 const styles = StyleSheet.create({
