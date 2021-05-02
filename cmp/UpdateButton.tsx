@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import * as Updates from 'expo-updates'
 import { Alert } from 'react-native'
-import { Button } from '../base'
+import { Button, ButtonGroup } from '../base'
 
 export function UpdateButton() {
   const [hasUpdate, setHasUpdate] = useState(false)
@@ -13,13 +13,26 @@ export function UpdateButton() {
     return () => listener.remove()
   }, [])
 
+  const [fetching, setFetching] = useState(false)
+
   if (!hasUpdate) return null
 
   const update = async () => {
+    setFetching(true)
     const { isNew } = await Updates.fetchUpdateAsync()
+    setFetching(false)
     if (isNew) await Updates.reloadAsync()
     else Alert.alert('Never mind', 'Turns out app was already up to date')
   }
 
-  return <Button text="New update, tap to reload" icon={{ name: 'update' }} onPress={update} />
+  return (
+    <ButtonGroup>
+      <Button
+        text="New update, tap to reload"
+        icon={{ name: 'cloud-download' }}
+        onPress={update}
+        disabled={fetching}
+      />
+    </ButtonGroup>
+  )
 }
