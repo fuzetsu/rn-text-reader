@@ -21,7 +21,5 @@ export function UpdateButton() {
     else Alert.alert('Never mind', 'Turns out app was already up to date')
   }
 
-  return (
-    <Button primary text="New update, tap to reload" icon={{ name: 'update' }} onPress={update} />
-  )
+  return <Button text="New update, tap to reload" icon={{ name: 'update' }} onPress={update} />
 }
