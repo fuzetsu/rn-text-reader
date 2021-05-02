@@ -14,13 +14,13 @@ export function LightsOff() {
   const [dark, setDark] = useState(true)
   const [textTop, setTextTop] = useState(false)
 
-  const setOnDoublePress = useDoublePress(() => setDark(false))
+  const showControlsDoublePress = useDoublePress(() => setDark(false))
 
   const batteryLevel = useBatteryLevel()
 
   useKeepAwake(true)
 
-  if (dark) return <TouchableOpacity style={styles.container} onPress={setOnDoublePress} />
+  if (dark) return <TouchableOpacity style={styles.container} onPress={showControlsDoublePress} />
 
   const readPercent = ((chunkIndex + 1) / chunks.length) * 100
 
@@ -57,7 +57,7 @@ const getBatteryIcon = (battery: number): IconProps['name'] => {
   if (isNaN(battery)) return 'battery-alert'
   return battery >= 100
     ? 'battery'
-    : (`battery-${Math.ceil((battery / 100) * 10)}0` as IconProps['name'])
+    : (`battery-${Math.round((battery / 100) * 10)}0` as IconProps['name'])
 }
 
 const styles = StyleSheet.create({

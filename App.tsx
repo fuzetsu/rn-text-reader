@@ -42,6 +42,4 @@ export default function App() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
-})
+const styles = StyleSheet.create({ container: { flex: 1, padding: 10 } })
