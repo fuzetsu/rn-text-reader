@@ -32,14 +32,17 @@ export const Button = ({
     ]}
   >
     <Text style={[styles.text, disabled && styles.disabledText, textStyle]}>
-      {icon && <Icon size={16} {...icon} style={styles.icon} />}
+      {icon && (
+        <>
+          <Icon size={16} {...icon} />{' '}
+        </>
+      )}
       {text}
     </Text>
   </TouchableOpacity>
 )
 
 const styles = StyleSheet.create({
-  icon: { marginRight: 4 },
   text: { fontSize: 16, color: 'white' },
   disabled: { backgroundColor: '#333' },
   disabledText: { color: '#777' },
