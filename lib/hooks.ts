@@ -1,5 +1,6 @@
+import * as Battery from 'expo-battery'
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { genId } from './util'
 
 export const useKeepAwake = (keepAwake: boolean) => {
@@ -25,4 +26,17 @@ export const useDoublePress = <T extends () => void>(fn: T) => {
     if (Date.now() - lastPress.current < 300) fnRef.current()
     lastPress.current = Date.now()
   }, [fnRef])
+}
+
+export const useBatteryLevel = () => {
+  const [battery, setBattery] = useState('')
+  useEffect(() => {
+    const updateBattery = (level: number) => setBattery((level * 100).toFixed(0))
+    Battery.getBatteryLevelAsync().then(updateBattery)
+    const listener = Battery.addBatteryLevelListener(({ batteryLevel }) =>
+      updateBattery(batteryLevel)
+    )
+    return () => listener.remove()
+  }, [])
+  return battery
 }

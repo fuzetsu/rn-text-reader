@@ -3444,6 +3444,11 @@ expo-asset@~8.3.1:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-battery@~4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/expo-battery/-/expo-battery-4.1.0.tgz#ade81c8a1632ef60cda9373505e7829868e3d355"
+  integrity sha512-qz8A+fcUT5GZXkXxDANLhCTMx3NAc2FfRQ/LaiInkRtoXY4qmq4XmI0pRaYALFxFeEYw96IO8bX/ulBr//HgBg==
+
 expo-clipboard@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/expo-clipboard/-/expo-clipboard-1.0.2.tgz#7b759aef61616ce700c4077f0ab1589c974887f8"

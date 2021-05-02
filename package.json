@@ -12,6 +12,7 @@
     "@react-native-async-storage/async-storage": "^1.13.0",
     "@react-native-picker/picker": "1.9.11",
     "expo": "~41.0.1",
+    "expo-battery": "~4.1.0",
     "expo-clipboard": "^1.0.2",
     "expo-document-picker": "~9.1.2",
     "expo-file-system": "~11.0.2",

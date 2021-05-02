@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
-import { Icon } from '../base'
-import { useDoublePress, useKeepAwake } from '../lib/hooks'
+import { Icon, IconProps } from '../base'
+import { useBatteryLevel, useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
 import { ReaderControls } from './ReaderControls'
+
+type Stat = { icon: IconProps['name']; value: string }
 
 const pad = (num: number) => ('00' + num).slice(-2)
 
@@ -14,6 +16,8 @@ export function LightsOff() {
 
   const setOnDoublePress = useDoublePress(() => setDark(false))
 
+  const battery = useBatteryLevel()
+
   useKeepAwake(true)
 
   if (dark) return <TouchableOpacity style={styles.container} onPress={setOnDoublePress} />
@@ -23,6 +27,12 @@ export function LightsOff() {
   const date = new Date()
   const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`
 
+  const stats: Stat[] = [
+    { icon: 'clock', value: time },
+    { icon: 'book-play', value: percent.toFixed(0) + '%' },
+    { icon: 'battery', value: battery + '%' },
+  ]
+
   return (
     <View style={styles.container}>
       <View style={[styles.fill, textTop && styles.reverse]}>
@@ -31,9 +41,13 @@ export function LightsOff() {
           {chunks[chunkIndex]?.trim()}
         </Text>
       </View>
-      <Text style={styles.readPercentage}>
-        {percent.toFixed(0)} <Icon name="percent-outline" /> – {time} <Icon name="clock" />
-      </Text>
+      <View style={styles.stats}>
+        {stats.map(({ icon, value }) => (
+          <Text style={styles.statsText}>
+            <Icon name={icon} size={18} /> {value}
+          </Text>
+        ))}
+      </View>
       <ReaderControls plain />
     </View>
   )
@@ -50,10 +64,13 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   text: { fontSize: 24, color: 'white' },
-  readPercentage: {
+  statsText: {
     fontSize: 20,
     color: '#999',
-    textAlign: 'center',
+  },
+  stats: {
     marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 })
