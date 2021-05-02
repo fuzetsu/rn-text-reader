@@ -18,7 +18,6 @@ export const ButtonGroup = ({ children, style }: Props) => (
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 4,
     flexDirection: 'row',
     flexWrap: 'nowrap',
     justifyContent: 'space-between',
