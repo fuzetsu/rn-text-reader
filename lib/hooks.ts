@@ -1,6 +1,7 @@
 import * as Battery from 'expo-battery'
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Platform } from 'react-native'
 import { genId } from './util'
 
 export const useKeepAwake = (keepAwake: boolean) => {
@@ -32,11 +33,22 @@ export const useBatteryLevel = () => {
   const [battery, setBattery] = useState('')
   useEffect(() => {
     const updateBattery = (level: number) => setBattery((level * 100).toFixed(0))
-    Battery.getBatteryLevelAsync().then(updateBattery)
+
+    const fetchLevel = () => Battery.getBatteryLevelAsync().then(updateBattery)
+    fetchLevel()
+
+    // android only fires update event on big level changes, so just poll
+    if (Platform.OS === 'android') {
+      const id = window.setInterval(fetchLevel, 1000 * 60 * 2)
+      return () => window.clearInterval(id)
+    }
+
     const listener = Battery.addBatteryLevelListener(({ batteryLevel }) =>
       updateBattery(batteryLevel)
     )
-    return () => listener.remove()
+    return () => {
+      listener.remove()
+    }
   }, [])
   return battery
 }
