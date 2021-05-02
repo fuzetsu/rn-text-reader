@@ -10,6 +10,7 @@ import {
   ReaderControls,
   SpeechService,
   VoiceControls,
+  UpdateButton,
 } from './cmp'
 
 export default function App() {
@@ -36,6 +37,7 @@ export default function App() {
           <VoiceControls />
           <ChunkPicker />
           <ReaderControls />
+          <UpdateButton />
         </>
       )}
     </View>

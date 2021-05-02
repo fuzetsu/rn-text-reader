@@ -54,11 +54,13 @@ export function LightsOff() {
 }
 
 const getBatteryIcon = (battery: number, charging: boolean): IconProps['name'] => {
-  if (isNaN(battery)) return 'battery-alert'
+  if (isNaN(battery)) return 'battery-unknown'
   const extra = charging ? '-charging' : ''
   const icon =
-    battery >= 100 ? 'battery' + extra : `battery${extra}-${Math.round((battery / 100) * 10)}0`
-  return icon as IconProps['name']
+    !charging && battery >= 100
+      ? 'battery'
+      : (`battery${extra}-${Math.round((battery / 100) * 10)}0` as IconProps['name'])
+  return icon
 }
 
 const styles = StyleSheet.create({
