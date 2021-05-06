@@ -6,6 +6,7 @@ import { Button } from '../base'
 export function UpdateButton() {
   const [hasUpdate, setHasUpdate] = useState(false)
   useEffect(() => {
+    if (__DEV__) return
     Updates.checkForUpdateAsync().then(({ isAvailable }) => setHasUpdate(isAvailable))
     const listener = Updates.addListener(({ type }) =>
       setHasUpdate(type === Updates.UpdateEventType.UPDATE_AVAILABLE)
