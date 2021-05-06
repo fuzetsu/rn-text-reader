@@ -32,20 +32,20 @@ export function ReaderControls() {
           onChange={x => setChunkIndex(Number(x))}
           minusIcon="arrow-left-thick"
           plusIcon="arrow-right-thick"
-          textStyle={styles.subdued}
+          textStyle={darkMode && styles.subdued}
         />
       )}
       <ButtonGroup>
         <Button
           {...readProps}
-          textStyle={styles.subdued}
+          textStyle={darkMode && styles.subdued}
           icon={{ name: reading ? 'stop' : 'play' }}
           text={readLabel}
           onPress={() => setReading(!reading)}
         />
         <Button
           plain={darkMode}
-          textStyle={styles.subdued}
+          textStyle={darkMode && styles.subdued}
           icon={{ name: darkMode ? 'lightbulb' : 'lightbulb-off' }}
           text={darkMode ? 'Light' : 'Dark'}
           onPress={() => setDarkModeEnabled(!darkMode)}
