@@ -14,7 +14,7 @@ export function DarkMode() {
   const [chunkIndex, chunks] = useStore([s => s.chunkIndex, s => s.chunks])
   const textTop = useStore(s => s.darkMode.textTop)
 
-  const [showControls, setShowControls] = useState(false)
+  const [showControls, setShowControls] = useState(true)
 
   const showControlsDoublePress = useDoublePress(() => setShowControls(true))
 
