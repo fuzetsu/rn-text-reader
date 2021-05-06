@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native'
+import { StyleSheet, View, StyleProp, ViewStyle, TextStyle } from 'react-native'
 import { TextInput } from './TextInput'
 import { Button } from './Button'
 import { IconProps } from './Icon'
@@ -13,6 +13,7 @@ interface Props {
   placeholder?: string
   noField?: boolean
   style?: StyleProp<ViewStyle>
+  textStyle?: StyleProp<TextStyle>
   minusIcon?: IconProps['name']
   plusIcon?: IconProps['name']
   plain?: boolean
@@ -24,6 +25,7 @@ export const NumberUpDown = ({
   step,
   noField,
   style,
+  textStyle,
   min,
   max,
   placeholder,
@@ -49,6 +51,7 @@ export const NumberUpDown = ({
         icon={{ name: minusIcon, size: 22 }}
         disabled={!isNaN(numMin) && numValue <= numMin}
         style={[styles.button, noFieldStyle]}
+        textStyle={textStyle}
         onPress={() => onChange(format(numValue - numStep))}
       />
       {!noField && (
@@ -66,6 +69,7 @@ export const NumberUpDown = ({
         icon={{ name: plusIcon, size: 22 }}
         disabled={!isNaN(numMax) && numValue >= numMax}
         style={[styles.button, noFieldStyle]}
+        textStyle={textStyle}
         onPress={() => onChange(format(numValue + numStep))}
       />
     </View>

@@ -52,7 +52,7 @@ export function DarkMode() {
           </Text>
         ))}
       </View>
-      <ReaderControls plain />
+      <ReaderControls />
     </View>
   )
 }
