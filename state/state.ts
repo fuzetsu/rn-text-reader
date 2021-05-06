@@ -11,7 +11,7 @@ export const savedState: SavedState = {
   pitch: '1',
   speed: '1',
   chunkIndex: 0,
-  darkMode: { enabled: false, textTop: true, showControls: true },
+  darkMode: { enabled: false, textTop: true },
 }
 const SAVED_STATE_KEYS = Object.keys(savedState)
 

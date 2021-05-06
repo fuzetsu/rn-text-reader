@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
 import { Icon, IconProps } from '../base'
 import { useBatteryLevel, useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
-import { setShowControls, setTextTop } from '../state/actions/dark-mode'
+import { setTextTop } from '../state/actions/dark-mode'
 import { ReaderControls } from './ReaderControls'
 
 type Stat = { icon: IconProps['name']; text: string }
@@ -12,7 +12,9 @@ const pad = (num: number) => ('00' + num).slice(-2)
 
 export function DarkMode() {
   const [chunkIndex, chunks] = useStore([s => s.chunkIndex, s => s.chunks])
-  const { textTop, showControls } = useStore(s => s.darkMode)
+  const textTop = useStore(s => s.darkMode.textTop)
+
+  const [showControls, setShowControls] = useState(false)
 
   const showControlsDoublePress = useDoublePress(() => setShowControls(true))
 

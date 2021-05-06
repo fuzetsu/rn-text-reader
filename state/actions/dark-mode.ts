@@ -7,4 +7,3 @@ const setter: KeySetter<State['darkMode']> = key => value =>
 
 export const setTextTop = setter('textTop')
 export const setEnabled = setter('enabled')
-export const setShowControls = setter('showControls')
