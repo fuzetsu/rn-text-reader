@@ -1,3 +1,3 @@
 import './subs'
 
-export { useStore } from './state'
+export { useStore, setState, getState } from './state'

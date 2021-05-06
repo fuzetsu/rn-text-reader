@@ -4,7 +4,8 @@ import * as Speech from 'expo-speech'
 import * as Notifications from 'expo-notifications'
 import { useStore } from '../state'
 import { retryPromise, chunkStats } from '../lib/util'
-import { setLightsOff, setReading, setChunkIndex } from '../state/actions'
+import { setReading, setChunkIndex } from '../state/actions'
+import { setEnabled as setDarkModeEnabled } from '../state/actions/dark-mode'
 
 Notifications.setNotificationCategoryAsync('reader-controls-start', [
   { buttonTitle: 'Start', identifier: 'start', options: { opensAppToForeground: false } },
@@ -58,7 +59,7 @@ export function SpeechService() {
       if (!cancel && status === 'done') {
         if (chunkIndex + 1 >= chunks.length) {
           if (chunks.length > 1) await speak(chunkStats(value, chunks))
-          setLightsOff(false)
+          setDarkModeEnabled(false)
           setReading(false)
           return
         }

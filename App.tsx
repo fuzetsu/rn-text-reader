@@ -5,7 +5,7 @@ import { useStore } from './state'
 import {
   ChunkPicker,
   EditText,
-  LightsOff,
+  DarkMode,
   TextControls,
   ReaderControls,
   SpeechService,
@@ -14,21 +14,21 @@ import {
 } from './cmp'
 
 export default function App() {
-  const [editText, lightsOff] = useStore([s => s.editText, s => s.lightsOff])
+  const [editText, darkMode] = useStore([s => s.editText, s => s.darkMode.enabled])
 
   const colorScheme = useColorScheme()
   const containerStyle = [
     styles.container,
     { backgroundColor: colorScheme === 'dark' ? 'black' : 'white' },
-    lightsOff && { padding: 0 },
+    darkMode && { padding: 0 },
   ]
 
   return (
     <View style={containerStyle}>
-      <StatusBar hidden={lightsOff} />
+      <StatusBar hidden={darkMode} />
       <SpeechService />
-      {lightsOff ? (
-        <LightsOff />
+      {darkMode ? (
+        <DarkMode />
       ) : editText ? (
         <EditText />
       ) : (

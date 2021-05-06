@@ -11,7 +11,7 @@ export const savedState: SavedState = {
   pitch: '1',
   speed: '1',
   chunkIndex: 0,
-  lightsOff: false,
+  darkMode: { enabled: false, textTop: true, showControls: true },
 }
 const SAVED_STATE_KEYS = Object.keys(savedState)
 
@@ -31,10 +31,11 @@ export const useStore = staterino({ state: initialState, hooks: React, merge })
 
 const storeKey = '@our-state'
 
-const { set, subscribe } = useStore
+const { get: getState, set: setState, subscribe } = useStore
+export { getState, setState, subscribe }
 
 // restore saved state
-getSavedState(storeKey).then((state: SavedState) => set([state, tempState, { loaded: true }]))
+getSavedState(storeKey).then((state: SavedState) => setState([state, tempState, { loaded: true }]))
 
 // persist state changes
 subscribe(

@@ -1,14 +1,15 @@
 import React from 'react'
 import { Button, ButtonGroup, NumberUpDown } from '../base'
 import { useStore } from '../state'
-import { setChunkIndex, setLightsOff, setReading } from '../state/actions'
+import { setChunkIndex, setReading } from '../state/actions'
+import { setEnabled as setDarkModeEnabled } from '../state/actions/dark-mode'
 
 export function ReaderControls({ plain }: { plain?: boolean }) {
-  const [chunks, chunkIndex, reading, lightsOff] = useStore([
+  const [chunks, chunkIndex, reading, darkMode] = useStore([
     s => s.chunks,
     s => s.chunkIndex,
     s => s.reading,
-    s => s.lightsOff,
+    s => s.darkMode.enabled,
   ])
 
   if (chunks.length <= 0) return null
@@ -41,9 +42,9 @@ export function ReaderControls({ plain }: { plain?: boolean }) {
         />
         <Button
           plain={plain}
-          icon={{ name: lightsOff ? 'lightbulb' : 'lightbulb-off' }}
-          text={`Lights ${lightsOff ? 'on' : 'off'}`}
-          onPress={() => setLightsOff(!lightsOff)}
+          icon={{ name: darkMode ? 'lightbulb' : 'lightbulb-off' }}
+          text={darkMode ? 'Light' : 'Dark'}
+          onPress={() => setDarkModeEnabled(!darkMode)}
         />
       </ButtonGroup>
     </>

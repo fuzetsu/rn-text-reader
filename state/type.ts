@@ -7,7 +7,11 @@ export interface SavedState {
   pitch: string
   speed: string
   chunkIndex: number
-  lightsOff: boolean
+  darkMode: {
+    enabled: boolean
+    textTop: boolean
+    showControls: boolean
+  }
 }
 
 export interface TempState {

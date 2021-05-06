@@ -1,5 +1,5 @@
 export * from './EditText'
-export * from './LightsOff'
+export * from './DarkMode'
 export * from './TextControls'
 export * from './VoiceControls'
 export * from './ChunkPicker'

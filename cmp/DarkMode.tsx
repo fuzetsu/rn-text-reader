@@ -1,26 +1,28 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
 import { Icon, IconProps } from '../base'
 import { useBatteryLevel, useDoublePress, useKeepAwake } from '../lib/hooks'
 import { useStore } from '../state'
+import { setShowControls, setTextTop } from '../state/actions/dark-mode'
 import { ReaderControls } from './ReaderControls'
 
 type Stat = { icon: IconProps['name']; text: string }
 
 const pad = (num: number) => ('00' + num).slice(-2)
 
-export function LightsOff() {
+export function DarkMode() {
   const [chunkIndex, chunks] = useStore([s => s.chunkIndex, s => s.chunks])
-  const [dark, setDark] = useState(true)
-  const [textTop, setTextTop] = useState(false)
+  const { textTop, showControls } = useStore(s => s.darkMode)
 
-  const showControlsDoublePress = useDoublePress(() => setDark(false))
+  const showControlsDoublePress = useDoublePress(() => setShowControls(true))
 
   const [batteryLevel, charging] = useBatteryLevel()
 
   useKeepAwake(true)
 
-  if (dark) return <TouchableOpacity style={styles.container} onPress={showControlsDoublePress} />
+  if (!showControls) {
+    return <TouchableOpacity style={styles.container} onPress={showControlsDoublePress} />
+  }
 
   const readPercent = ((chunkIndex + 1) / chunks.length) * 100
 
@@ -37,7 +39,7 @@ export function LightsOff() {
     <View style={styles.container}>
       <View style={[styles.fill, textTop && styles.reverse]}>
         <TouchableOpacity onPress={() => setTextTop(!textTop)} style={styles.fill} />
-        <Text onPress={() => setDark(true)} style={styles.text}>
+        <Text onPress={() => setShowControls(false)} style={styles.text}>
           {chunks[chunkIndex]?.trim()}
         </Text>
       </View>
@@ -56,7 +58,7 @@ export function LightsOff() {
 const getBatteryIcon = (battery: number, charging: boolean): IconProps['name'] => {
   if (isNaN(battery)) return 'battery-unknown'
   const extra = charging ? '-charging' : ''
-  const level = Math.round((battery / 100) * 10)
+  const level = Math.max(1, Math.round((battery / 100) * 10))
   const icon =
     !charging && level >= 10 ? 'battery' : (`battery${extra}-${level}0` as IconProps['name'])
   return icon
