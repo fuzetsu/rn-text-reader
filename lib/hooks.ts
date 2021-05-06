@@ -52,7 +52,7 @@ export const useBatteryLevel = (): [battery: string, charging: boolean] => {
 
     // android only fires update event on big level changes, so just poll
     if (Platform.OS === 'android') {
-      const id = window.setInterval(fetchLevel, 1000 * 60 * 2)
+      const id = window.setInterval(fetchLevel, 1000 * 60)
       return () => window.clearInterval(id)
     }
 
