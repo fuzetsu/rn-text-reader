@@ -11,6 +11,7 @@ export const savedState: SavedState = {
   pitch: '1',
   speed: '1',
   chunkIndex: 0,
+  lightsOff: false,
 }
 const SAVED_STATE_KEYS = Object.keys(savedState)
 
@@ -21,7 +22,6 @@ export const tempState: TempState = {
   filteredVoices: [],
   languages: [],
   reading: false,
-  lightsOff: false,
   editText: false,
 }
 

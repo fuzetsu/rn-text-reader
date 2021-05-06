@@ -7,6 +7,7 @@ export interface SavedState {
   pitch: string
   speed: string
   chunkIndex: number
+  lightsOff: boolean
 }
 
 export interface TempState {
@@ -16,7 +17,6 @@ export interface TempState {
   filteredVoices: Voice[]
   languages: string[]
   reading: boolean
-  lightsOff: boolean
   editText: boolean
 }
 
