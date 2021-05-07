@@ -107,3 +107,11 @@ export const nextIndex = (arr: { length: number }, index: number) =>
 
 export const prevIndex = (arr: { length: number }, index: number) =>
   index - 1 < 0 ? arr.length - 1 : index - 1
+
+export const doublePress = (fn: () => void, threshold = 500) => {
+  let lastClick = 0
+  return () => {
+    if (Date.now() - lastClick <= threshold) fn()
+    lastClick = Date.now()
+  }
+}

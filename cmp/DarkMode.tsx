@@ -17,7 +17,6 @@ export function DarkMode() {
   const textTop = useStore(s => s.darkMode.textTop)
 
   const [showControls, setShowControls] = useState(true)
-
   const showControlsDoublePress = useDoublePress(() => setShowControls(true))
 
   const [batteryLevel, charging] = useBatteryLevel()
