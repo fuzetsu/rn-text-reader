@@ -56,6 +56,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primary: { backgroundColor: 'rgb(70, 48, 235)' },
-  plain: { borderColor: 'white', borderWidth: 1 },
+  plain: { borderColor: '#eee', borderWidth: StyleSheet.hairlineWidth },
   default: { backgroundColor: '#555' },
 })

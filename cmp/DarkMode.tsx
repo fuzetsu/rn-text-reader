@@ -9,6 +9,8 @@ import { ReaderControls } from './ReaderControls'
 type Stat = { icon: IconProps['name']; text: string }
 
 const pad = (num: number) => ('00' + num).slice(-2)
+const currentTime = (date = new Date()) => pad(date.getHours()) + ':' + pad(date.getMinutes())
+const ratioToPercent = (ratio: number) => (ratio * 100).toFixed(0) + '%'
 
 export function DarkMode() {
   const [chunkIndex, chunks] = useStore([s => s.chunkIndex, s => s.chunks])
@@ -26,15 +28,10 @@ export function DarkMode() {
     return <TouchableOpacity style={styles.container} onPress={showControlsDoublePress} />
   }
 
-  const readPercent = ((chunkIndex + 1) / chunks.length) * 100
-
-  const date = new Date()
-  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`
-
   const stats: Stat[] = [
-    { icon: 'clock', text: time },
-    { icon: 'book-play', text: readPercent.toFixed(0) + '%' },
-    { icon: getBatteryIcon(Number(batteryLevel), charging), text: batteryLevel + '%' },
+    { icon: 'clock', text: currentTime() },
+    { icon: 'book-play', text: ratioToPercent((chunkIndex + 1) / chunks.length) },
+    { icon: getBatteryIcon(batteryLevel, charging), text: ratioToPercent(batteryLevel) },
   ]
 
   return (
@@ -58,9 +55,9 @@ export function DarkMode() {
 }
 
 const getBatteryIcon = (battery: number, charging: boolean): IconProps['name'] => {
-  if (isNaN(battery)) return 'battery-unknown'
+  if (battery < 0) return 'battery-unknown'
   const extra = charging ? '-charging' : ''
-  const level = Math.max(1, Math.round((battery / 100) * 10))
+  const level = Math.max(1, Math.round(battery * 10))
   const icon =
     !charging && level >= 10 ? 'battery' : (`battery${extra}-${level}0` as IconProps['name'])
   return icon
