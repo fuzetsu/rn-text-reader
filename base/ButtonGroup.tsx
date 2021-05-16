@@ -16,10 +16,6 @@ export const ButtonGroup = ({ children, style }: Props) => (
 )
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-  },
+  container: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center' },
   button: { flex: 1 },
 })

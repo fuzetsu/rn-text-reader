@@ -57,9 +57,8 @@ const getBatteryIcon = (battery: number, charging: boolean): IconProps['name'] =
   if (battery < 0) return 'battery-unknown'
   const extra = charging ? '-charging' : ''
   const level = Math.max(1, Math.round(battery * 10))
-  const icon =
-    !charging && level >= 10 ? 'battery' : (`battery${extra}-${level}0` as IconProps['name'])
-  return icon
+  if (charging || level < 10) return `battery${extra}-${level}0` as IconProps['name']
+  return 'battery'
 }
 
 const styles = StyleSheet.create({

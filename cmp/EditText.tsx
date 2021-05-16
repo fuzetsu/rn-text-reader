@@ -18,14 +18,15 @@ export function EditText() {
       />
       <ButtonGroup>
         <Button
-          primary
+          type="primary"
+          icon="floppy"
           text="Save"
           onPress={() => {
             updateValue(text)
             setEditText(false)
           }}
         />
-        <Button text="Cancel" onPress={() => setEditText(false)} />
+        <Button icon="cancel" text="Cancel" onPress={() => setEditText(false)} />
       </ButtonGroup>
     </>
   )

@@ -39,14 +39,14 @@ export function ReaderControls() {
         <Button
           {...readProps}
           textStyle={darkMode && styles.subdued}
-          icon={{ name: reading ? 'stop' : 'play' }}
+          icon={reading ? 'stop' : 'play'}
           text={readLabel}
           onPress={() => setReading(!reading)}
         />
         <Button
-          plain={darkMode}
+          type={darkMode ? 'plain' : 'default'}
           textStyle={darkMode && styles.subdued}
-          icon={{ name: darkMode ? 'lightbulb' : 'lightbulb-off' }}
+          icon={darkMode ? 'lightbulb' : 'lightbulb-off'}
           text={darkMode ? 'Light' : 'Dark'}
           onPress={() => setDarkModeEnabled(!darkMode)}
         />

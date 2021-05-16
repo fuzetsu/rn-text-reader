@@ -46,7 +46,7 @@ export const NumberUpDown = ({
   return (
     <View style={[styles.container, style]}>
       <Button
-        plain={plain}
+        type={plain ? 'plain' : 'default'}
         text=""
         icon={{ name: minusIcon, size: 22 }}
         disabled={!isNaN(numMin) && numValue <= numMin}
@@ -64,7 +64,7 @@ export const NumberUpDown = ({
         />
       )}
       <Button
-        plain={plain}
+        type={plain ? 'plain' : 'default'}
         text=""
         icon={{ name: plusIcon, size: 22 }}
         disabled={!isNaN(numMax) && numValue >= numMax}

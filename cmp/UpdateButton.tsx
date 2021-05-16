@@ -29,7 +29,7 @@ export function UpdateButton() {
   return (
     <Button
       text="New update, tap to reload"
-      icon={{ name: 'cloud-download' }}
+      icon="cloud-download"
       onPress={update}
       disabled={fetching}
     />
