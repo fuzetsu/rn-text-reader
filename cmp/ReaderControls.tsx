@@ -17,8 +17,6 @@ export function ReaderControls() {
 
   const readLabel = chunks.length > 1 ? ` ${chunkIndex + 1}/${chunks.length}` : ''
 
-  const readProps = darkMode ? { plain: true } : { primary: true }
-
   return (
     <>
       {chunks.length > 1 && (
@@ -37,7 +35,7 @@ export function ReaderControls() {
       )}
       <ButtonGroup>
         <Button
-          {...readProps}
+          type={darkMode ? 'plain' : 'primary'}
           textStyle={darkMode && styles.subdued}
           icon={reading ? 'stop' : 'play'}
           text={readLabel}
