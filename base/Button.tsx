@@ -1,5 +1,6 @@
 import React, { ComponentProps } from 'react'
 import { TouchableOpacity, Text, StyleSheet, StyleProp, TextStyle, ViewStyle } from 'react-native'
+import { MIN_CONTROL_HEIGHT } from '../constants'
 import { Icon, IconProps } from './Icon'
 
 type ButtonType = 'primary' | 'plain' | 'default'
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   disabledText: { color: '#777' },
   common: {
     flexDirection: 'row',
-    minHeight: 39,
+    minHeight: MIN_CONTROL_HEIGHT,
     margin: 2,
     borderRadius: 4,
     paddingHorizontal: 15,

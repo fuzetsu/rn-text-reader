@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Picker as NativePicker } from '@react-native-picker/picker'
 import { PickerProps } from '@react-native-picker/picker/typings/Picker'
+import { MIN_CONTROL_HEIGHT } from '../constants'
 
 export function Picker<T>(props: PropsWithChildren<PickerProps<T>>) {
   return (
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   picker: {
-    height: 40,
+    height: MIN_CONTROL_HEIGHT,
     borderWidth: 0,
   },
 })

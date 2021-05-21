@@ -1,5 +1,6 @@
 import React, { ComponentProps } from 'react'
 import { StyleSheet, TextInput as NativeTextInput } from 'react-native'
+import { MIN_CONTROL_HEIGHT } from '../constants'
 
 export const TextInput = (props: ComponentProps<typeof NativeTextInput>) => {
   return <NativeTextInput {...props} style={[styles.input, props.style]} />
@@ -7,7 +8,7 @@ export const TextInput = (props: ComponentProps<typeof NativeTextInput>) => {
 
 const styles = StyleSheet.create({
   input: {
-    height: 40,
+    height: MIN_CONTROL_HEIGHT,
     borderColor: '#777',
     backgroundColor: 'white',
     color: 'black',
