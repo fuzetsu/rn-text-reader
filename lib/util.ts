@@ -51,7 +51,7 @@ export const getVoices = async () => {
 }
 
 const sentenceEnd = '.;\n…!?'
-const quoteEnd = '”"'
+const quoteEnd = '”’"\''
 
 export const chunkText = (text: string, chunkSize = 200): string[] => {
   if (text?.trim().length <= 0) return []
