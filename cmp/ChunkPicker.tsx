@@ -28,5 +28,5 @@ export function ChunkPicker() {
 
 const styles = StyleSheet.create({
   textScroll: { flex: 1 },
-  text: { marginTop: 5, fontSize: 17 },
+  text: { marginTop: 5, fontSize: 17, color: 'white' },
 })

@@ -79,6 +79,6 @@ export const NumberUpDown = ({
 const styles = StyleSheet.create({
   noField: { flex: 1 },
   button: { paddingHorizontal: 40 },
-  input: { flex: 1, textAlign: 'center' },
+  input: { flex: 1, textAlign: 'center', backgroundColor: 'transparent', color: 'white' },
   container: { margin: 2, flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center' },
 })
